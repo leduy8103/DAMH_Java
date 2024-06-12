@@ -48,3 +48,4 @@ public class Role implements GrantedAuthority {
         return getClass().hashCode();
     }
 }
+

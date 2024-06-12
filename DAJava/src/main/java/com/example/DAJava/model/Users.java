@@ -19,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Users")
+@Table(name = "user")
 public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,13 @@ public class Users implements UserDetails {
     @Column(name = "username", length = 50, unique = true)
     @NotBlank(message = "Username is required")
     @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters")
-            private String username;
-            @Column(name = "password", length = 250)
-            @NotBlank(message = "Password is required")
-            private String password;
-            @Column(name = "email", length = 50, unique = true)
-            @NotBlank(message = "Email is required")
-            @Size(min = 1, max = 50, message = "Email must be between 1 and 50 characters")
+    private String username;
+    @Column(name = "password", length = 250)
+    @NotBlank(message = "Password is required")
+    private String password;
+    @Column(name = "email", length = 50, unique = true)
+    @NotBlank(message = "Email is required")
+    @Size(min = 1, max = 50, message = "Email must be between 1 and 50 characters")
     @Email
     private String email;
     @Column(name = "phone", length = 10, unique = true)
@@ -91,3 +91,4 @@ public class Users implements UserDetails {
         return getClass().hashCode();
     }
 }
+
