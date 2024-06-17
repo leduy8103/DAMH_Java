@@ -10,12 +10,11 @@ import java.util.Date;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Songs")
+@Table(name = "songs")
 public class Songs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long songId;
-
     private String title;
     private String lyric;
     private int duration;

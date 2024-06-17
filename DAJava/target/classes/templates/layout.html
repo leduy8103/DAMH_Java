@@ -9,14 +9,14 @@
           href="/css/style.css">
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <aside class="sidebar">
         <nav>
             <ul>
                 <li><a href="#">Trang chủ</a></li>
                 <li><span>THƯ VIỆN</span></li>
                 <li><a href="#">Vừa nghe</a></li>
-                <li><a href="#">Bài hát</a></li>
+                <li><a th:href="@{/admin/songlist}">Bài hát</a></li>
                 <li><a href="#">Album</a></li>
                 <li><a href="#">Nghệ sĩ</a></li>
                 <li><span>DANH SÁCH PHÁT</span></li>
@@ -41,9 +41,8 @@
                 <a href="#">Đặc sắc</a>
             </nav>
             <section layout:fragment="content">
-
+                <!-- Content will be injected here -->
             </section>
-            <!-- Your content here -->
         </section>
     </main>
 </div>

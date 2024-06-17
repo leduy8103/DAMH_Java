@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
     // Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
     public void setDefaultRole(String username) {
-        userRepository.findByUsername(username).ifPresentOrElse(user -> {user.getRoles().add(roleRepository.findRoleById( Role.USERS.value));
+        userRepository.findByUsername(username).ifPresentOrElse(user -> {user.getRoles().add(roleRepository.findRoleById( Role.USER.value));
                     userRepository.save(user);
                 },
                 () -> { throw new UsernameNotFoundException("User not found"); }

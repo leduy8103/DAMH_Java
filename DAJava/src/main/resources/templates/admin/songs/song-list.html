@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="header-row">
+        <h1>Danh sách bài hát</h1>
+        <div class="nav-item">
+            <a th:href="@{/admin/songlist/add}" class="btn btn-custom">Thêm bài hát</a>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Mã bài hát</th>
+            <th>Tựa đề</th>
+            <th>Album</th>
+            <th>Thời lượng</th>
+            <th>Ngày ra mắt</th>
+            <th>Đường dẫn file âm thanh</th>
+            <th>Ảnh bìa</th>
+            <th>Chức năng</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="song : ${songs}">
+            <td th:text="${song.songId}"></td>
+            <td th:text="${song.title}"></td>
+            <td th:text="${song.album}"></td>
+            <td th:text="${song.duration}"></td>
+            <td th:text="${song.releaseDate}"></td>
+            <td th:text="${song.filePath}"></td>
+            <td>
+                <img th:src="@{${song.imagePath}}" class="img-fluid" alt="Song Image" style="max-width: 100px; max-height: 100px;"/>
+            </td>
+            <td>
+                <div>
+                    <a th:href="@{/admin/songlist/edit/{id}(id=${song.songId})}"
+                       class="btn btn-success btn-sm">Sửa</a>
+                    <a th:href="@{/admin/songlist/delete/{id}(id=${song.songId})}"
+                       class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc không?')">Xóa</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
