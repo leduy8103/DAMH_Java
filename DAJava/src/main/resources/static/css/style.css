@@ -112,3 +112,14 @@ body {
 .content-nav a:hover {
     color: #FFFFFF;
 }
+.table {
+    margin-top: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
