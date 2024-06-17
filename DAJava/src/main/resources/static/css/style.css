@@ -4,37 +4,47 @@ body {
     background-color: #181818;
     color: #FFFFFF;
 }
-
-.container {
+h1 {
+    color: #000; /* Màu đen */
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Màu nền nhẹ nhàng để tạo độ tương phản */
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.container-fluid {
     display: flex;
     height: 100vh;
-    margin: 0 -12px 0;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-
 .sidebar {
     width: 250px;
     background-color: #000000;
-    padding: 20px 0; /* Remove padding from the left */
+    padding: 20px 0;
     box-sizing: border-box;
-    display: block;
     height: 100%;
+    overflow-y: auto;
 }
 
 .sidebar nav ul {
     list-style-type: none;
     padding: 0;
-    margin: 0; /* Ensure no margin */
+    margin: 0;
 }
 
 .sidebar nav ul li {
-    margin: 10px 20px; /* Adjust margin to only include top and bottom margins */
+    margin: 10px 20px;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar nav ul li a {
     display: block;
-    padding: 10px 20px; /* Ensure padding does not include left padding */
+    padding: 10px 20px;
     color: #FFFFFF;
     text-decoration: none;
     border-radius: 5px;
@@ -49,20 +59,27 @@ body {
     color: #888888;
     text-transform: uppercase;
     font-size: 12px;
-    margin: 20px 20px 0 20px; /* Adjust margin to only include top margin */
+    margin: 20px 20px 0 20px;
     display: block;
 }
 
 .main-content {
-    flex: 1;
-    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    height: 100%;
     box-sizing: border-box;
+    padding: 0;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
 }
 
 .search-bar {
@@ -104,7 +121,9 @@ body {
 }
 
 .content {
-    margin-top: 20px;
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .content-nav a {
@@ -112,7 +131,50 @@ body {
     color: #888888;
     text-decoration: none;
 }
-
 .content-nav a:hover {
     color: #FFFFFF;
+}
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.header-row h1 {
+    margin: 0; /* Loại bỏ margin mặc định của h1 */
+    font-size: 2.5em; /* Kích thước chữ lớn */
+}
+
+.nav-item {
+    margin: 0; /* Loại bỏ margin mặc định của nav-item */
+}
+.btn-custom {
+    background-color: #000; /* Màu nền đen */
+    color: #fff; /* Màu chữ trắng */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
+}
+.form-group label {
+    color: #000; /* Màu văn bản đen */
+    padding-top: 5px; /* Lề trên 5px */
+    padding-bottom: 5px; /* Lề dưới 5px */
+    text-align: left; /* Căn lề sang trái */
+    display: block; /* Hiển thị label dưới dạng block để nó nằm trên cùng một dòng với input */
+    margin-bottom: 5px; /* Khoảng cách dưới của mỗi label */
+}
+.container {
+    margin-left: 0px;  /* Đẩy container về phía trái */
+}
+/* Đặt kích thước cho các input và textarea */
+.form-control {
+    width: 100%; /* Độ rộng 100% của input và textarea */
+    box-sizing: border-box; /* Đảm bảo kích thước tính cả border và padding */
 }
