@@ -1,6 +1,10 @@
 package com.example.DAJava.controller;
 
+import com.example.DAJava.model.Artists;
+import com.example.DAJava.model.Genres;
 import com.example.DAJava.model.Songs;
+import com.example.DAJava.service.ArtistsService;
+import com.example.DAJava.service.GenresService;
 import com.example.DAJava.service.SongsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,6 +29,94 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+    // Quản lý chủ đề
+    @Autowired
+    private GenresService genresService;
+
+    @GetMapping("/genres")
+    public String getAllGenres(Model model) {
+        List<Genres> genresList = genresService.getAllGenres();
+        model.addAttribute("genresList", genresList);
+        return "admin/genres/list";
+    }
+
+    @GetMapping("/genres/add")
+    public String showAddGenreForm(Model model) {
+        model.addAttribute("genre", new Genres());
+        return "admin/genres/add";
+    }
+
+    @PostMapping("/genres/add")
+    public String addGenre(@ModelAttribute Genres genre) {
+        genresService.saveGenre(genre);
+        return "redirect:/admin/genres";
+    }
+
+    @GetMapping("/genres/edit/{id}")
+    public String showEditGenreForm(@PathVariable Long id, Model model) {
+        Genres genre = genresService.getGenreById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid genre Id:" + id));
+        model.addAttribute("genre", genre);
+        return "admin/genres/edit";
+    }
+
+    @PostMapping("/genres/edit/{id}")
+    public String editGenre(@PathVariable Long id, @ModelAttribute Genres genre) {
+        genre.setGenreId(id);
+        genresService.updateGenre(genre);
+        return "redirect:/admin/genres";
+    }
+
+    @GetMapping("/genres/delete/{id}")
+    public String deleteGenre(@PathVariable Long id) {
+        genresService.deleteGenre(id);
+        return "redirect:/admin/genres";
+    }
+
+    // Quản lý ca sĩ
+    @Autowired
+    private ArtistsService artistsService;
+
+    @GetMapping("/artists")
+    public String listArtists(Model model) {
+        model.addAttribute("artistsList", artistsService.getAllArtists());
+        return "admin/artists/list";
+    }
+
+    @GetMapping("/artists/add")
+    public String showAddArtistForm(Model model) {
+        model.addAttribute("artist", new Artists());
+        return "admin/artists/add";
+    }
+
+    @PostMapping("/artists/add")
+    public String addArtist(@ModelAttribute Artists artist) {
+        artistsService.addArtist(artist);
+        return "redirect:/admin/artists";
+    }
+
+    @GetMapping("/artists/edit/{id}")
+    public String showEditArtistForm(@PathVariable Long id, Model model) {
+        Artists artist = artistsService.getArtistById(id);
+        model.addAttribute("artist", artist);
+        return "admin/artists/edit";
+    }
+
+    @PostMapping("/artists/edit/{id}")
+    public String editArtist(@PathVariable Long id, @ModelAttribute Artists artist) {
+        artist.setArtistId(id);
+        artistsService.updateArtist(artist);
+        return "redirect:/admin/artists";
+    }
+
+    @GetMapping("/artists/delete/{id}")
+    public String deleteArtist(@PathVariable Long id) {
+        artistsService.deleteArtist(id);
+        return "redirect:/admin/artists";
+    }
+
+    //Quản lý bài hát
     @Autowired
     private SongsService songService;
 //    @Autowired

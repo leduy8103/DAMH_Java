@@ -11,7 +11,7 @@
 <div class="container">
     <div class="main-content">
         <h1>Artists List</h1>
-        <a class="btn btn-primary mb-3" href="/artists/add">Add New Artist</a>
+        <a class="btn btn-primary mb-3" href="/admin/artists/add">Add New Artist</a>
         <table class="table table-dark table-bordered">
             <thead>
             <tr>
@@ -31,8 +31,8 @@
                 <td th:text="${artist.bio}">Bio</td>
                 <td th:text="${artist.country}">Country</td>
                 <td>
-                    <a class="btn btn-warning btn-sm" th:href="@{/artists/edit/{id}(id=${artist.artistId})}">Edit</a>
-                    <a class="btn btn-danger btn-sm" th:href="@{/artists/delete/{id}(id=${artist.artistId})}">Delete</a>
+                    <a class="btn btn-warning btn-sm" th:href="@{/admin/artists/edit/{id}(id=${artist.artistId})}">Edit</a>
+                    <a class="btn btn-danger btn-sm" th:href="@{/admin/artists/delete/{id}(id=${artist.artistId})}">Delete</a>
                 </td>
             </tr>
             </tbody>
