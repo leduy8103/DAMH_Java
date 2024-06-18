@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+>
 <head>
     <title>Genres List</title>
     <!-- Bootstrap CSS -->
@@ -8,7 +12,7 @@
     <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+<div layout:fragment="content" class="container">
     <div class="main-content">
         <h1>Genres List</h1>
         <a class="btn btn-primary mb-3" href="/admin/genres/add">Add New Genre</a>

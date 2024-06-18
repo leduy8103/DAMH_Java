@@ -18,7 +18,7 @@
                 <li><a href="#">Vừa nghe</a></li>
                 <li><a th:href="@{/admin/songlist}">Bài hát</a></li>
                 <li><a href="#">Album</a></li>
-                <li><a href="#">Nghệ sĩ</a></li>
+                <li><a th:href="@{/admin/artists}">Nghệ sĩ</a></li>
                 <li><span>DANH SÁCH PHÁT</span></li>
             </ul>
         </nav>
@@ -35,11 +35,6 @@
             </div>
         </header>
         <section class="content">
-            <nav class="content-nav">
-                <a href="#">Thể loại</a>
-                <a href="#">Vừa ra mắt</a>
-                <a href="#">Đặc sắc</a>
-            </nav>
             <section layout:fragment="content">
                 <!-- Content will be injected here -->
             </section>

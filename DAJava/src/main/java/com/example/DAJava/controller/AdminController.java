@@ -3,10 +3,13 @@ package com.example.DAJava.controller;
 import com.example.DAJava.model.Artists;
 import com.example.DAJava.model.Genres;
 import com.example.DAJava.model.Songs;
+import com.example.DAJava.model.Users;
 import com.example.DAJava.service.AlbumsService;
 import com.example.DAJava.service.ArtistsService;
 import com.example.DAJava.service.GenresService;
 import com.example.DAJava.service.SongsService;
+import com.example.DAJava.service.UserService;
+import com.example.DAJava.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -79,6 +82,8 @@ public class AdminController {
     @Autowired
     private ArtistsService artistsService;
 
+    @Autowired
+    private UserService userService;
     @GetMapping("/artists")
     public String listArtists(Model model) {
         model.addAttribute("artistsList", artistsService.getAllArtists());
@@ -135,9 +140,10 @@ public class AdminController {
     public String showAddForm(Model model) {
         Songs song = new Songs();
         song.setReleaseDate(new Date()); // Đặt ngày hiện tại
+        model.addAttribute("songs", new Songs());
         model.addAttribute("genres", genresService.getAllGenres());
         model.addAttribute("albums", albumsService.getAllAlbums());
-        return "/admin/songs/add-song";
+        return "admin/songs/add-song";
     }
     // Process the form for adding a new product
     @PostMapping("/songlist/add")
@@ -210,5 +216,50 @@ public class AdminController {
     public String deleteSong(@PathVariable Long id) {
         songService.deleteSongById(id);
         return "redirect:/songlist";
+    }
+
+    //Quản lý user
+    @GetMapping("users")
+    public String listUsers(Model model) {
+        model.addAttribute("usersList", userService.getAllUsers());
+        return "admin/users/list";
+    }
+
+    @GetMapping("users/lock/{username}")
+    public String lockUser(@PathVariable String username) {
+        userService.lockUser(username);
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("users/unlock/{username}")
+    public String unlockUser(@PathVariable String username) {
+        userService.unlockUser(username);
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("users/reset-password-form/{username}")
+    public String showResetPasswordForm(@PathVariable String username, Model model) {
+        model.addAttribute("user", userService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found")));
+        return "admin/users/reset-password-form";
+    }
+
+    @PostMapping("users/reset-password/{username}")
+    public String resetPassword(@PathVariable String username, @RequestParam("newPassword") String newPassword) {
+        userService.resetPassword(username, newPassword);
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("users/edit/{id}")
+    public String showEditUserForm(@PathVariable String username, Model model) {
+        Users user = userService.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        model.addAttribute("user", user);
+        return "admin/users/edit-user-form";
+    }
+
+    @PostMapping("users/edit/{id}")
+    public String updateUser(@PathVariable String username, @ModelAttribute Users updatedUser) {
+        userService.updateUser(username, updatedUser);
+        return "redirect:/admin/users";
     }
 }

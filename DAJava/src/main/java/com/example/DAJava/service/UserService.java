@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +59,58 @@ public class UserService implements UserDetailsService {
             UsernameNotFoundException {
         return userRepository.findByUsername(username);
     }
+
+    // Chặn người dùng đăng nhập
+    public void lockUser(String username) {
+        userRepository.findByUsername(username).ifPresent(user -> {
+            user.setAccountNonLocked(false);
+            userRepository.save(user);
+        });
+    }
+
+    // Mở khóa tài khoản người dùng
+    public void unlockUser(String username) {
+        userRepository.findByUsername(username).ifPresent(user -> {
+            user.setAccountNonLocked(true);
+            userRepository.save(user);
+        });
+    }
+
+    // Đặt lại mật khẩu
+    public void resetPassword(String username, String newPassword) {
+        userRepository.findByUsername(username).ifPresent(user -> {
+            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+            userRepository.save(user);
+        });
+    }
+
+    // Lấy danh sách tất cả người dùng
+    public List<Users> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Users updateUser(String username, Users updatedUser) {
+        Optional<Users> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            Users existingUser = userOptional.get();
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPassword(updatedUser.getPassword());  // Bạn có thể mã hóa mật khẩu trước khi lưu
+            existingUser.setRoles(updatedUser.getRoles());
+            return userRepository.save(existingUser);
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
+    // Cấp quyền cho người dùng
+//    public void grantRole(Long userId, Long roleId) {
+//        Role role = roleRepository.findById(roleId)
+//                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+//        userRepository.findById(userId).ifPresent(user -> {
+//            user.getRoles().add(role);
+//            userRepository.save(user);
+//        });
+//    }
 }
 

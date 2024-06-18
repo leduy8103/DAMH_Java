@@ -47,6 +47,8 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    @Column(name = "account_non_locked")
+    private boolean accountNonLocked = true;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Role> userRoles = this.getRoles();
@@ -67,9 +69,7 @@ public class Users implements UserDetails {
         return true;
     }
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() {return accountNonLocked;}
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
