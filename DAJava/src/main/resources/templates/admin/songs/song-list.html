@@ -24,6 +24,7 @@
             <th>Album</th>
             <th>Thời lượng</th>
             <th>Ngày ra mắt</th>
+            <th>Thể loại</th>
             <th>Đường dẫn file âm thanh</th>
             <th>Ảnh bìa</th>
             <th>Chức năng</th>
@@ -33,9 +34,10 @@
         <tr th:each="song : ${songs}">
             <td th:text="${song.songId}"></td>
             <td th:text="${song.title}"></td>
-            <td th:text="${song.album}"></td>
+            <td th:text="${song.album != null ? song.album.title : 'Không có'}"></td>
             <td th:text="${song.duration}"></td>
             <td th:text="${song.releaseDate}"></td>
+            <td th:text="${song.genre.name}"></td>
             <td th:text="${song.filePath}"></td>
             <td>
                 <img th:src="@{${song.imagePath}}" class="img-fluid" alt="Song Image" style="max-width: 100px; max-height: 100px;"/>

@@ -3,6 +3,7 @@ package com.example.DAJava.controller;
 import com.example.DAJava.model.Artists;
 import com.example.DAJava.model.Genres;
 import com.example.DAJava.model.Songs;
+import com.example.DAJava.service.AlbumsService;
 import com.example.DAJava.service.ArtistsService;
 import com.example.DAJava.service.GenresService;
 import com.example.DAJava.service.SongsService;
@@ -119,6 +120,8 @@ public class AdminController {
     //Quản lý bài hát
     @Autowired
     private SongsService songService;
+    @Autowired
+    private AlbumsService albumsService;
 //    @Autowired
 //    private GenresService genresService;
 //    @Autowired
@@ -126,30 +129,86 @@ public class AdminController {
     @GetMapping("/songlist")
     public String showSongList(Model model, String name) {
         model.addAttribute("songs", songService.getAllSongs());
-//        model.addAttribute("genres" genresService.getAllGenres);
-//        model.addAttribute("albums" albumsService.getAllAlbums);
         return "/admin/songs/song-list";
     }
     @GetMapping("/songlist/add")
     public String showAddForm(Model model) {
         Songs song = new Songs();
         song.setReleaseDate(new Date()); // Đặt ngày hiện tại
-        model.addAttribute("songs", song);
-//    model.addAttribute("genres", genresService.getAllGenres());
-//    model.addAttribute("albums", albumsService.getAllAlbums());
+        model.addAttribute("genres", genresService.getAllGenres());
+        model.addAttribute("albums", albumsService.getAllAlbums());
         return "/admin/songs/add-song";
     }
     // Process the form for adding a new product
     @PostMapping("/songlist/add")
-    public String addSong(@Valid Songs songs, BindingResult result) {
+    public String addSong(@Valid Songs songs, BindingResult result,Model model) {
         if (result.hasErrors()) {
+            Songs song = new Songs();
+            song.setReleaseDate(new Date()); // Đặt ngày hiện tại
+            model.addAttribute("songs", song);
+            model.addAttribute("genres", genresService.getAllGenres());
+            model.addAttribute("albums", albumsService.getAllAlbums());
             return "/admin/songs/add-song";
         }
         if (songs.getReleaseDate() == null) {
-            // Set current date as releaseDate
+//             Set current date as releaseDate
             songs.setReleaseDate(Calendar.getInstance().getTime());
         }
         songService.addSong(songs);
+        return "redirect:/songlist";
+    }
+    @GetMapping("/songlist/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Songs song = songService.getSongsById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
+        model.addAttribute("songs", song);
+        model.addAttribute("genres", genresService.getAllGenres());
+        model.addAttribute("albums", albumsService.getAllAlbums());
+        return "/admin/songs/update-song";
+    }
+    // Process the form for updating a product
+    @PostMapping("/songlist/edit/{id}")
+    public String updateProduct(@PathVariable Long id, @Valid Songs song,
+                                BindingResult result,
+                                @RequestParam("avatarFiles") List<MultipartFile> avatarFiles, Model model) {
+//        if (result.hasErrors()) {
+//            song.setSongId(id);
+//            model.addAttribute("genres", genresService.getAllGenres());
+//            model.addAttribute("albums", albumsService.getAllAlbums());
+//            // keep the id in the form in case of errors
+//            return "/admin/songs/update-song";
+//        }
+//
+//        String uploadDir = "src/main/resources/static/images/";
+//        try {
+//            Path uploadPath = Paths.get(uploadDir);
+//            if (!Files.exists(uploadPath)) {
+//                Files.createDirectories(uploadPath);
+//            }
+//            for (MultipartFile avatarFile : avatarFiles) {
+//                if (!avatarFile.isEmpty()) {
+//                    String fileName = StringUtils.cleanPath(avatarFile.getOriginalFilename());
+//                    product.addAvatar(fileName);  // Assuming you have a method to add filenames to the product
+//
+//                    try (InputStream inputStream = avatarFile.getInputStream()) {
+//                        Path filePath = uploadPath.resolve(fileName);
+//                        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException("Could not save avatar image: " + e.getMessage());
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("Could not create upload directory: " + e.getMessage());
+//        }
+//
+//        productService.updateProduct(product);
+        return "redirect:/products";
+    }
+    // Handle request to delete a product
+    @GetMapping("/songlist/delete/{id}")
+    public String deleteSong(@PathVariable Long id) {
+        songService.deleteSongById(id);
         return "redirect:/songlist";
     }
 }

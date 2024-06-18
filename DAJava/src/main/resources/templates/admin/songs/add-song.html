@@ -12,25 +12,27 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
     <script>
-        // JavaScript để sử dụng datepicker cho trường releaseDate
         $(document).ready(function() {
-            // Chọn class datepicker và áp dụng datepicker từ jQuery UI
-            $('.datepicker').datepicker({
+            // Đặt ngày mặc định là ngày hôm nay
+            var currentDate = new Date();
+            var day = String(currentDate.getDate()).padStart(2, '0');
+            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            var year = currentDate.getFullYear();
+            var formattedDate = year + '-' + month + '-' + day;
+
+            // Áp dụng datepicker từ jQuery UI cho trường releaseDate
+            $('#releaseDate').datepicker({
                 dateFormat: 'yy-mm-dd',  // Định dạng ngày tháng
                 changeMonth: true,
                 changeYear: true,
+                defaultDate: currentDate,  // Đặt ngày mặc định
                 onSelect: function(dateText, inst) {
-                    // Nếu người dùng không chọn ngày, cập nhật ngày mặc định là ngày hiện tại
+                    // Nếu người dùng không chọn ngày, đặt lại ngày mặc định
                     if (dateText === '') {
-                        var currentDate = new Date();
-                        var day = String(currentDate.getDate()).padStart(2, '0');
-                        var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-                        var year = currentDate.getFullYear();
-                        var formattedDate = year + '-' + month + '-' + day;
                         $(this).datepicker('setDate', formattedDate);
                     }
                 }
-            });
+            }).datepicker('setDate', formattedDate); // Đặt giá trị ban đầu là ngày hôm nay
         });
     </script>
 </head>
@@ -46,30 +48,45 @@
             </div>
 
             <!-- Trường nhập lời bài hát -->
-<!--            <div class="form-group">-->
-<!--                <label for="lyric">Lyric</label>-->
-<!--                <textarea id="lyric" name="lyric" th:field="*{lyric}" class="form-control" rows="5" required></textarea>-->
-<!--            </div>-->
+            <div class="form-group">
+                <label for="lyric">Lyric</label>
+                <textarea id="lyric" name="lyric" th:field="*{lyric}" class="form-control" rows="5" required></textarea>
+            </div>
 
             <!-- Trường nhập thời lượng bài hát (tính bằng giây) -->
-<!--            <div class="form-group">-->
-<!--                <label for="duration">Duration (in seconds)</label>-->
-<!--                <input type="number" id="duration" name="duration" th:field="*{duration}" class="form-control" required>-->
-<!--            </div>-->
+            <!--            <div class="form-group">-->
+            <!--                <label for="duration">Duration (in seconds)</label>-->
+            <!--                <input type="number" id="duration" name="duration" th:field="*{duration}" class="form-control" required>-->
+            <!--            </div>-->
 
             <!-- Trường nhập ngày phát hành bài hát -->
             <div class="form-group">
                 <label for="releaseDate">Ngày ra mắt</label>
-                <input type="text" id="releaseDate" name="releaseDate" class="form-control datepicker">
+                <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker">
             </div>
 
-            <!-- Trường chọn file bài hát -->
+            <!-- Trường nhập thể loại -->
+            <div class="mb-3">
+                <label for="genre" class="form-label">Thể loại:</label>
+                <select th:field="*{genre}" class="form-control" id="genre">
+                    <option th:each="genre : ${genres}"
+                            th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                </select>
+            </div>
+
+            <!-- Trường nhập album -->
+            <div class="mb-3">
+                <label for="album" class="form-label">Album:</label>
+                <select th:field="*{album}" class="form-control" id="album">
+                    <option th:each="album : ${albums}"
+                            th:value="${album.songId}" th:text="${album.title}"></option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="filePath">Đường dẫn file âm thanh</label>
                 <input type="file" id="filePath" name="filePath" th:field="*{filePath}" class="form-control" required>
             </div>
-
-            <!-- Trường chọn file hình ảnh -->
             <div class="form-group">
                 <label for="imagePath">Đường dẫn file hình ảnh</label>
                 <input type="file" id="imagePath" name="imagePath" th:field="*{imagePath}" class="form-control" required>
