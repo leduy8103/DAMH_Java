@@ -41,7 +41,7 @@
     <div class="container">
         <h1>Thêm bài hát</h1>
         <form th:action="@{/admin/songlist/add}" th:object="${songs}" method="post" enctype="multipart/form-data">
-            <!-- Trường nhập tiêu đề bài hát -->
+<!--             Trường nhập tiêu đề bài hát -->
             <div class="form-group">
                 <label for="title">Tựa đề</label>
                 <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required>
@@ -54,12 +54,12 @@
             </div>
 
             <!-- Trường nhập thời lượng bài hát (tính bằng giây) -->
-            <!--            <div class="form-group">-->
-            <!--                <label for="duration">Duration (in seconds)</label>-->
-            <!--                <input type="number" id="duration" name="duration" th:field="*{duration}" class="form-control" required>-->
-            <!--            </div>-->
+            <div class="form-group">
+                <label for="duration">Duration (in seconds)</label>
+                <input type="number" id="duration" name="duration" th:field="*{duration}" class="form-control" required>
+            </div>
 
-            <!-- Trường nhập ngày phát hành bài hát -->
+<!--             Trường nhập ngày phát hành bài hát -->
             <div class="form-group">
                 <label for="releaseDate">Ngày ra mắt</label>
                 <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker">
