@@ -4,12 +4,7 @@ import com.example.DAJava.model.Artists;
 import com.example.DAJava.model.Genres;
 import com.example.DAJava.model.Songs;
 import com.example.DAJava.model.Users;
-import com.example.DAJava.service.AlbumsService;
-import com.example.DAJava.service.ArtistsService;
-import com.example.DAJava.service.GenresService;
-import com.example.DAJava.service.SongsService;
-import com.example.DAJava.service.UserService;
-import com.example.DAJava.service.UserService;
+import com.example.DAJava.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -82,8 +77,6 @@ public class AdminController {
     @Autowired
     private ArtistsService artistsService;
 
-    @Autowired
-    private UserService userService;
     @GetMapping("/artists")
     public String listArtists(Model model) {
         model.addAttribute("artistsList", artistsService.getAllArtists());
@@ -140,10 +133,9 @@ public class AdminController {
     public String showAddForm(Model model) {
         Songs song = new Songs();
         song.setReleaseDate(new Date()); // Đặt ngày hiện tại
-        model.addAttribute("songs", new Songs());
         model.addAttribute("genres", genresService.getAllGenres());
         model.addAttribute("albums", albumsService.getAllAlbums());
-        return "admin/songs/add-song";
+        return "/admin/songs/add-song";
     }
     // Process the form for adding a new product
     @PostMapping("/songlist/add")
@@ -217,7 +209,8 @@ public class AdminController {
         songService.deleteSongById(id);
         return "redirect:/songlist";
     }
-
+    @Autowired
+    private UserService userService;
     //Quản lý user
     @GetMapping("users")
     public String listUsers(Model model) {
@@ -262,5 +255,9 @@ public class AdminController {
         userService.updateUser(username, updatedUser);
         return "redirect:/admin/users";
     }
+<<<<<<< HEAD
     //chill
+=======
+
+>>>>>>> 3a8a129e5d5fe659d9beab4d02126ba933e13730
 }
