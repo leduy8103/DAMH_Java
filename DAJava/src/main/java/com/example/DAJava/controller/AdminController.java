@@ -30,7 +30,11 @@ public class AdminController {
     // Quản lý chủ đề
     @Autowired
     private GenresService genresService;
-
+    @GetMapping("/home")
+    public String home(Model model) {
+        model.addAttribute("message", "Chào mừng bạn đến với trang quản lý âm nhạc!");
+        return "admin/home";
+    }
     @GetMapping("/genres")
     public String getAllGenres(Model model) {
         List<Genres> genresList = genresService.getAllGenres();

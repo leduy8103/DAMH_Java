@@ -40,8 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/css/**", "/js/**", "/", "/oauth/**", "/register", "/error", "/images/**", "/cart", "/cart/**", "/login")
                                 .permitAll() // Cho phép truy cập không cần xác thực.
-//                                .requestMatchers("/products/edit/**", "/products/add", "/products/delete")
-//                                .hasAnyAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập.
+                                .requestMatchers("/admin/**") // Chỉ cho phép ADMIN truy cập.
+                                .hasAuthority("ADMIN")
                                 .requestMatchers("/api/**")
                                 .permitAll() // API mở cho mọi người dùng.
                                 .anyRequest().authenticated() // Bất kỳ yêu cầu nào khác cần xác thực.
@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login") // Trang đăng nhập.
                         .loginProcessingUrl("/login") // URL xử lý đăng nhập.
-                        .defaultSuccessUrl("/admin/songlist") // Trang sau đăng nhập thành công.
+                        .defaultSuccessUrl("/admin/home") // Trang sau đăng nhập thành công.
                         .failureUrl("/login") // Trang đăng nhập thất bại.
                         .failureHandler(customAuthenticationFailureHandler())
                         .permitAll()
