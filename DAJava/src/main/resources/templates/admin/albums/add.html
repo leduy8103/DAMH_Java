@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Album</title>
+    <!-- Bao gồm thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bao gồm thư viện jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Đặt ngày mặc định là ngày hôm nay
+            var currentDate = new Date();
+            var day = String(currentDate.getDate()).padStart(2, '0');
+            var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            var year = currentDate.getFullYear();
+            var formattedDate = year + '-' + month + '-' + day;
+
+            // Áp dụng datepicker từ jQuery UI cho trường releaseDate
+            $('#releaseDate').datepicker({
+                dateFormat: 'yy-mm-dd',  // Định dạng ngày tháng
+                changeMonth: true,
+                changeYear: true,
+                defaultDate: currentDate,  // Đặt ngày mặc định
+                onSelect: function(dateText, inst) {
+                    // Nếu người dùng không chọn ngày, đặt lại ngày mặc định
+                    if (dateText === '') {
+                        $(this).datepicker('setDate', formattedDate);
+                    }
+                }
+            }).datepicker('setDate', formattedDate); // Đặt giá trị ban đầu là ngày hôm nay
+        });
+    </script>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h1>Thêm Album</h1>
+        <form th:action="@{/admin/albumlist/add}" th:object="${album}" class="needs-validation" method="post" enctype="multipart/form-data" novalidate>
+            <!-- Trường nhập tiêu đề album -->
+            <div class="form-group">
+                <label for="title">Tiêu đề</label>
+                <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required>
+            </div>
+
+            <!-- Trường nhập ngày phát hành album -->
+            <div class="form-group">
+                <label for="releaseDate">Ngày phát hành</label>
+                <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker" required>
+            </div>
+
+            <!-- Trường nhập hình ảnh album -->
+            <div class="form-group">
+                <label for="image">Hình ảnh</label>
+                <input type="file" id="image" name="imageFile" class="form-control" accept="image/*" required>
+            </div>
+
+            <!-- Chọn nghệ sĩ và thể loại -->
+            <div class="mb-3">
+                <label for="artist">Nghệ sĩ:</label>
+                <select id="artist" name="artist" class="form-control" th:field="*{artist}">
+                    <option th:each="artist : ${artists}" th:value="${artist.artistId}" th:text="${artist.artistName}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="genre">Thể loại:</label>
+                <select id="genre" name="genre" class="form-control" th:field="*{genre}">
+                    <option th:each="genre : ${genres}" th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                </select>
+            </div>
+
+            <!-- Nút gửi form -->
+            <button type="submit" class="btn btn-primary">Thêm Album</button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật Album</title>
+    <!-- Bao gồm thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bao gồm thư viện jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Đặt ngày mặc định là ngày hiện tại của album
+            var currentDate = new Date($('#releaseDate').val());
+
+            $('#releaseDate').datepicker({
+                dateFormat: 'yy-mm-dd',  // Định dạng ngày tháng
+                changeMonth: true,
+                changeYear: true,
+                defaultDate: currentDate,
+                onSelect: function(dateText, inst) {
+                    // Nếu người dùng không chọn ngày, đặt lại ngày mặc định
+                    if (dateText === '') {
+                        $(this).datepicker('setDate', currentDate);
+                    }
+                }
+            }).datepicker('setDate', currentDate); // Đặt giá trị ban đầu là ngày hiện tại của album
+        });
+    </script>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h1>Cập nhật Album</h1>
+        <form th:action="@{/admin/albumlist/edit/{id}(id=${album.albumId})}" th:object="${album}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <!-- Trường nhập tiêu đề album -->
+            <div class="form-group">
+                <label for="title">Tiêu đề</label>
+                <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required>
+            </div>
+
+            <!-- Trường nhập ngày phát hành album -->
+            <div class="form-group">
+                <label for="releaseDate">Ngày phát hành</label>
+                <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker" required>
+            </div>
+
+            <!-- Trường nhập file hình ảnh -->
+            <div class="form-group">
+                <label for="imageFile">File hình ảnh</label>
+                <input type="file" id="imageFile" name="imageFile" class="form-control">
+                <small class="form-text text-muted">Chọn file mới nếu muốn thay đổi</small>
+            </div>
+
+            <!-- Chọn nghệ sĩ -->
+            <div class="mb-3">
+                <label for="artist" class="form-label">Nghệ sĩ:</label>
+                <select id="artist" name="artist" class="form-control" th:field="*{artist}">
+                    <option th:each="artist : ${artists}"
+                            th:value="${artist.artistId}" th:text="${artist.artistName}"></option>
+                </select>
+            </div>
+
+            <!-- Chọn thể loại -->
+            <div class="mb-3">
+                <label for="genre" class="form-label">Thể loại:</label>
+                <select id="genre" name="genre" class="form-control" th:field="*{genre}">
+                    <option th:each="genre : ${genres}"
+                            th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                </select>
+            </div>
+
+            <!-- Nút cập nhật form -->
+            <button type="submit" class="btn btn-primary">Cập nhật Album</button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

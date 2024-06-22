@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h1 th:text="${message}"></h1>
+        <p>Chào mừng bạn đến với trang quản lý âm nhạc của chúng tôi.</p>
+    </div>
+</section>
+</body>
+</html>

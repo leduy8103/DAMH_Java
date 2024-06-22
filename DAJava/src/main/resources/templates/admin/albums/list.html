@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <div class="header-row">
+    <h1>Danh sách bài hát</h1>
+    <div class="nav-item">
+      <a th:href="@{/admin/albumlist/add}" class="btn btn-custom">Thêm Album</a>
+    </div>
+  </div>
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Tựa đề</th>
+      <th>Ngày phát hành</th>
+      <th>Hình ảnh</th>
+      <th>Nghệ sĩ</th>
+      <th>Thể loại</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="album : ${albums}">
+      <td th:text="${album.albumId}"></td>
+      <td th:text="${album.title}"></td>
+      <td th:text="${#dates.format(album.releaseDate, 'dd/MM/yyyy')}"></td>
+      <td>
+        <img th:src="@{${album.imagePath}}" style="max-width: 100px; max-height: 100px;">
+      </td>
+      <td th:text="${album.artist.artistName}"></td>
+      <td th:text="${album.genre.name}"></td>
+      <td>
+        <div>
+          <a th:href="@{/admin/albumlist/edit/{id}(id=${album.albumId})}"
+             class="btn btn-success btn-sm">Sửa</a>
+          <a th:href="@{/admin/albumlist/delete/{id}(id=${album.albumId})}"
+             class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc không?')">Xóa</a>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+</body>
+</html>
