@@ -25,23 +25,9 @@ public class UserService implements UserDetailsService {
     private IUserRepository userRepository;
     @Autowired
     private IRoleRepository roleRepository;
-    // Lưu người dùng mới vào cơ sở dữ liệu sau khi mã hóa mật khẩu.
-    public void save(@NotNull Users user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        userRepository.save(user);
-    }
-    // Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
-    public void setDefaultRole(String username) {
-        userRepository.findByUsername(username).ifPresentOrElse(user -> {user.getRoles().add(roleRepository.findRoleById( Role.USER.value));
-                    userRepository.save(user);
-                },
-                () -> { throw new UsernameNotFoundException("User not found"); }
-        );
-    }
-    // Tải thông tin chi tiết người dùng để xác thực.
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws
-            UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return org.springframework.security.core.userdetails.User
@@ -54,13 +40,27 @@ public class UserService implements UserDetailsService {
                 .disabled(!user.isEnabled())
                 .build();
     }
-    // Tìm kiếm người dùng dựa trên tên đăng nhập.
-    public Optional<Users> findByUsername(String username) throws
-            UsernameNotFoundException {
+
+    public void save(@NotNull Users user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    public void setDefaultRole(String username) {
+        userRepository.findByUsername(username).ifPresentOrElse(user -> {
+                    user.getRoles().add(roleRepository.findRoleById(Role.USER.value));
+                    userRepository.save(user);
+                },
+                () -> {
+                    throw new UsernameNotFoundException("User not found");
+                }
+        );
+    }
+
+    public Optional<Users> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    // Chặn người dùng đăng nhập
     public void lockUser(String username) {
         userRepository.findByUsername(username).ifPresent(user -> {
             user.setAccountNonLocked(false);
@@ -68,7 +68,6 @@ public class UserService implements UserDetailsService {
         });
     }
 
-    // Mở khóa tài khoản người dùng
     public void unlockUser(String username) {
         userRepository.findByUsername(username).ifPresent(user -> {
             user.setAccountNonLocked(true);
@@ -76,7 +75,6 @@ public class UserService implements UserDetailsService {
         });
     }
 
-    // Đặt lại mật khẩu
     public void resetPassword(String username, String newPassword) {
         userRepository.findByUsername(username).ifPresent(user -> {
             user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
@@ -84,7 +82,6 @@ public class UserService implements UserDetailsService {
         });
     }
 
-    // Lấy danh sách tất cả người dùng
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
@@ -95,7 +92,7 @@ public class UserService implements UserDetailsService {
             Users existingUser = userOptional.get();
             existingUser.setUsername(updatedUser.getUsername());
             existingUser.setEmail(updatedUser.getEmail());
-            existingUser.setPassword(updatedUser.getPassword());  // Bạn có thể mã hóa mật khẩu trước khi lưu
+            existingUser.setPassword(updatedUser.getPassword()); // Bạn có thể mã hóa mật khẩu trước khi lưu
             existingUser.setRoles(updatedUser.getRoles());
             return userRepository.save(existingUser);
         } else {
@@ -103,7 +100,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    // Cấp quyền cho người dùng
+    // Phương thức cấp quyền cho người dùng (bình luận đã được bật)
 //    public void grantRole(Long userId, Long roleId) {
 //        Role role = roleRepository.findById(roleId)
 //                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
@@ -113,4 +110,3 @@ public class UserService implements UserDetailsService {
 //        });
 //    }
 }
-

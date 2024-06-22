@@ -1,5 +1,6 @@
 package com.example.DAJava;
 
+import com.example.DAJava.security.CustomAuthenticationFailureHandler;
 import com.example.DAJava.service.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +57,9 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login") // Trang đăng nhập.
                         .loginProcessingUrl("/login") // URL xử lý đăng nhập.
-                        .defaultSuccessUrl("/home") // Trang sau đăng nhập thành công.
-                        .failureUrl("/login?error") // Trang đăng nhập thất bại.
+                        .defaultSuccessUrl("/admin/songlist") // Trang sau đăng nhập thành công.
+                        .failureUrl("/login") // Trang đăng nhập thất bại.
+                        .failureHandler(customAuthenticationFailureHandler())
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe
@@ -77,5 +79,9 @@ public class SecurityConfig {
                         .realmName("hutech") // Tên miền cho xác thực cơ bản.
                 )
                 .build(); // Xây dựng và trả về chuỗi lọc bảo mật.
+    }
+    @Bean
+    public CustomAuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 }

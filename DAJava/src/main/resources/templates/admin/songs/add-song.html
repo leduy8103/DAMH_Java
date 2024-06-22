@@ -5,7 +5,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Thêm bài hát</title>
     <!-- Bao gồm thư viện jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bao gồm thư viện jQuery UI -->
@@ -40,8 +40,8 @@
 <section layout:fragment="content">
     <div class="container">
         <h1>Thêm bài hát</h1>
-        <form th:action="@{/admin/songlist/add}" th:object="${songs}" method="post" enctype="multipart/form-data">
-<!--             Trường nhập tiêu đề bài hát -->
+        <form th:action="@{/admin/songlist/add}" th:object="${song}" class="needs-validation" method="post" enctype="multipart/form-data" novalidate>
+            <!-- Trường nhập tiêu đề bài hát -->
             <div class="form-group">
                 <label for="title">Tựa đề</label>
                 <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required>
@@ -59,10 +59,10 @@
                 <input type="number" id="duration" name="duration" th:field="*{duration}" class="form-control" required>
             </div>
 
-<!--             Trường nhập ngày phát hành bài hát -->
+            <!-- Trường nhập ngày phát hành bài hát -->
             <div class="form-group">
                 <label for="releaseDate">Ngày ra mắt</label>
-                <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker">
+                <input type="text" id="releaseDate" name="releaseDate" th:field="*{releaseDate}" class="form-control datepicker" required>
             </div>
 
             <!-- Trường nhập thể loại -->
@@ -79,17 +79,18 @@
                 <label for="album" class="form-label">Album:</label>
                 <select th:field="*{album}" class="form-control" id="album">
                     <option th:each="album : ${albums}"
-                            th:value="${album.songId}" th:text="${album.title}"></option>
+                            th:value="${album.albumId}" th:text="${album.title}"></option>
                 </select>
             </div>
-
+            <!-- Audio path -->
             <div class="form-group">
                 <label for="filePath">Đường dẫn file âm thanh</label>
-                <input type="file" id="filePath" name="filePath" th:field="*{filePath}" class="form-control" required>
+                <input type="file" id="filePath" name="filePath" class="form-control" required>
             </div>
+            <!-- Image path -->
             <div class="form-group">
                 <label for="imagePath">Đường dẫn file hình ảnh</label>
-                <input type="file" id="imagePath" name="imagePath" th:field="*{imagePath}" class="form-control" required>
+                <input type="file" id="imagePath" name="imagePath" class="form-control" required>
             </div>
 
             <!-- Nút gửi form -->
