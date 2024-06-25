@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layoutUser}">>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link rel="stylesheet" href="/css/cspd-player.css">
+<!--    <link rel="stylesheet" href="/css/cspd-player.css">-->
 </head>
 <body>
 <ul>
-    <tr th:each="song : ${songs}">
-        <li>
-            <a href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" th:text="${song.title}">Tên bài hát</a>
-        </li>
-    </tr>
+<!--    <tr th:each="song : ${songs}">-->
+<!--        <li>-->
+<!--            <a href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" th:text="${song.title}">Tên bài hát</a>-->
+<!--        </li>-->
+<!--    </tr>-->
 </ul>
 
-<audio id="cs_audio" controls>
-    <source src="/audio/CoolKid - Sau Cơn Mưa (ft. Rhyder).mp3" type="audio/mpeg">
-</audio>
 
-<div class="cs_audioplayer-container">
-    <div id="cs_audioplayer">
-        <span class="cs_audio_time">
-                <span id="cs_audio_current_time">0:00</span>
-            </span>
 
-        <span id="cs_play_pause_btn" class="cs_play_pause_btn">
-                <i class="far fa-play-circle" id="cs_audio_play"></i>
-                <i class="far fa-pause-circle" id="cs_audio_pause"></i>
-            </span>
+<!--<div class="cs_audioplayer-container">-->
+<!--    <div id="cs_audioplayer">-->
+<!--        <span class="cs_audio_time">-->
+<!--                <span id="cs_audio_current_time">0:00</span>-->
+<!--            </span>-->
 
-        <span id="cs_audio_sound" class="cs_audio_sound">
-                <i class="fas fa-volume-down"></i>
-                <div class="cs_volBar">
-                    <div class="cs_volume"></div>
-                    <div id="cs_volume_handle" class="cs_volume_handle"></div>
-                </div>
-            </span>
+<!--        <span id="cs_play_pause_btn" class="cs_play_pause_btn">-->
+<!--                <i class="far fa-play-circle" id="cs_audio_play"></i>-->
+<!--                <i class="far fa-pause-circle" id="cs_audio_pause"></i>-->
+<!--            </span>-->
 
-        <div id="cs_song_title" class="cs_song_title"></div>
-        <div class="cs_audio_bar">
-            <div class="cs_audio_bar_now"></div>
-            <div class="cs_audio_bar_loaded"></div>
-            <div id="cs_audio_duration_handle" class="cs_audio_duration_handle"></div>
-        </div>
+<!--        <span id="cs_audio_sound" class="cs_audio_sound">-->
+<!--                <i class="fas fa-volume-down"></i>-->
+<!--                <div class="cs_volBar">-->
+<!--                    <div class="cs_volume"></div>-->
+<!--                    <div id="cs_volume_handle" class="cs_volume_handle"></div>-->
+<!--                </div>-->
+<!--            </span>-->
 
-        <div id="cs_audio_duration" class="cs_audio_duration"></div>
-    </div>
-</div>
+<!--        <div id="cs_song_title" class="cs_song_title"></div>-->
+<!--        <div class="cs_audio_bar">-->
+<!--            <div class="cs_audio_bar_now"></div>-->
+<!--            <div class="cs_audio_bar_loaded"></div>-->
+<!--            <div id="cs_audio_duration_handle" class="cs_audio_duration_handle"></div>-->
+<!--        </div>-->
 
-<script src="/js/cspd-player.js"></script>
+<!--        <div id="cs_audio_duration" class="cs_audio_duration"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="/js/layoutUser.js"></script>-->
 </body>
 </html>

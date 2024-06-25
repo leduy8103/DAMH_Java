@@ -22,7 +22,141 @@ body {
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
     transition: .5s;
+    background-color: #0d0d0c; /* Spotify-like dark background */
+    color: #fff; /* Default text color */
 }
+
+
+
+#cs_audio {
+    display: none;
+}
+
+#cs_audioplayer {
+    margin-left: 50px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background-color: #282828; /* Dark background for the player bar */
+    padding: 16px 24px; /* Increased padding for a more spacious feel */
+    color: #fff; /* Text color */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+#cs_play_pause_btn {
+    margin-left: 0; /* Centering the play/pause button */
+    margin-right: 16px;
+    position: relative;
+}
+
+#cs_play_pause_btn i {
+    font-size: 1.8em; /* Larger icons */
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+#cs_audio_current_time,
+#cs_audio_duration {
+    font-size: 0.9em;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.cs_audio_bar {
+    background-color: #535353;
+    width: 10%; /* Độ rộng 100% để căn chỉnh với thanh màu xanh */
+    height: 4px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: visible;
+    flex-grow: 1;
+    margin: 0 16px;
+}
+
+.cs_audio_bar_now {
+    background-color: #1db954;
+    width: 0; /* Độ rộng mặc định khi chưa có tiến trình nào */
+    height: 100%;
+    position: absolute;
+}
+
+.cs_audio_duration_handle,
+.cs_volume_handle {
+    width: 12px;
+    height: 12px;
+    background-color: #1db954;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0; /* Cố định handle về vị trí bên trái */
+}
+
+.cs_volume_handle {
+    top: 50%; /* Center the handle vertically */
+    transform: translateY(-50%);
+}
+
+#cs_audio_sound {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    right: 5px;
+    float: right;
+    margin-left: 15px;
+    top: -2px;
+}
+
+#cs_audio_sound i {
+    font-size: 1.2em;
+    vertical-align: middle;
+    font-size: 1.14em;
+}
+
+.cs_volBar {
+    height: 6px;
+    width: 100px; /* Độ rộng cố định cho thanh âm lượng */
+    background-color: #535353;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin-left: 8px;
+    border-radius: 2px;
+}
+
+.cs_volume {
+    height: 100%;
+    background-color: #1db954;
+    position: absolute;
+}
+
+.cs_audioplayer-container {
+    text-align: center;
+}
+
+.cs_audio_time {
+    position: relative;
+    left: 0;
+    float: left;
+    font-size: 0.87em;
+}
+.cs_song_title {
+    width: 200px; /* Độ rộng cố định của phần tử */
+    overflow: hidden; /* Ẩn bớt nội dung dư thừa khi vượt quá kích thước */
+    white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+    text-overflow: ellipsis; /* Hiển thị dấu chấm ba (...) khi nội dung quá dài */
+}
+
+
+
 
 a {
     text-decoration: none;
