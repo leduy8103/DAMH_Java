@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <style>
         body {
-            background-color: white;
+            background-color: black;
             color: white; /* Đổi màu chữ sang trắng để dễ đọc hơn trên nền đen */
         }
     </style>
@@ -19,9 +19,12 @@
     <ul>
         <tr th:each="song : ${songs}">
             <li>
-                <a href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" th:text="${song.title}">Tên bài hát</a>
+                <button type="button" th:attr="style='width: 40px; height: 40px; background-image: url(\'' + ${song.imagePath} + '\');'" onclick="cspd_change_music('${song.filePath}'); updateSongTitle(this);">
+                    <span th:text="${song.title}">Tên bài hát</span>
+                </button>
             </li>
         </tr>
+
     </ul>
 </section>
 </body>

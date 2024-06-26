@@ -12,9 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @Autowired
     private SongsService songService;
-    @GetMapping
+    @GetMapping("/trang1")
     public String Index(Model model) {
         model.addAttribute("songs", songService.getAllSongs());
         return "/home/index";
+    }
+    @GetMapping("/trang2")
+    public String Home(Model model) {
+        model.addAttribute("songs", songService.getAllSongs());
+        return "/home/home1";
     }
 }
