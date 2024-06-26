@@ -14,9 +14,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -145,11 +146,57 @@ public class AdminController {
                           @RequestParam("filePath") MultipartFile file,
                           @RequestParam("imagePath") MultipartFile image,
                           RedirectAttributes redirectAttributes) {
-        songs.setFilePath("/audio/" + file.getOriginalFilename());
-        songs.setImagePath("/images/songImg/" + image.getOriginalFilename());
+        // Lưu file âm thanh
+        if (!file.isEmpty()) {
+            try {
+                // Lưu tệp âm thanh vào thư mục src/main/resources/static/images/songAudio
+                String audioDirectory = "src/main/resources/static/images/songAudio";
+                String filePath = saveFile(file, audioDirectory);
+                songs.setFilePath("/images/songAudio/" + file.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Xử lý lỗi lưu file
+            }
+        }
+
+        // Lưu file hình ảnh
+        if (!image.isEmpty()) {
+            try {
+                // Lưu tệp hình ảnh vào thư mục src/main/resources/static/images/songImg
+                String imageDirectory = "src/main/resources/static/images/songImg";
+                String imagePath = saveFile(image, imageDirectory);
+                songs.setImagePath("/images/songImg/" + image.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Xử lý lỗi lưu file
+            }
+        }
+
+        if (songs.getReleaseDate() == null) {
+            // Set current date as releaseDate
+            songs.setReleaseDate(Calendar.getInstance().getTime());
+        }
         songs.setDuration(0);
         songService.addSong(songs);
         return "redirect:/admin/songlist";
+    }
+
+    // Method to save file and return the path
+    private String saveFile(MultipartFile file, String directory) throws IOException {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Path uploadPath = Paths.get(directory);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        try (InputStream inputStream = file.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            return filePath.toString();
+        } catch (IOException e) {
+            throw new IOException("Could not save file: " + fileName, e);
+        }
     }
 
     @GetMapping("/songlist/edit/{id}")
@@ -177,12 +224,12 @@ public class AdminController {
         // Lưu file âm thanh mới hoặc giữ nguyên file cũ
         if (audioFile != null && !audioFile.isEmpty()) {
             String audioFileName = StringUtils.cleanPath(Objects.requireNonNull(audioFile.getOriginalFilename()));
-            String audioUploadDir = "src/main/resources/static/audio/";
+            String audioUploadDir = "src/main/resources/static/images/songAudio/";
             try {
                 Files.createDirectories(Paths.get(audioUploadDir));
                 Path audioFilePath = Paths.get(audioUploadDir + audioFileName);
                 Files.copy(audioFile.getInputStream(), audioFilePath, StandardCopyOption.REPLACE_EXISTING);
-                song.setFilePath("/audio/" + audioFileName);
+                song.setFilePath("/images/songAudio/" + audioFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

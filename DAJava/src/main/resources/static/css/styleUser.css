@@ -3,6 +3,7 @@
 :root {
     --header-height: 3rem;
     --nav-width: 68px;
+    --nav-width-expanded: 250px; /* Thêm biến này để chiều rộng khi mở rộng */
     --first-color: #4723D9;
     --first-color-light: #AFA5D9;
     --white-color: #F7F6FB;
@@ -18,13 +19,139 @@
 body {
     position: relative;
     margin: var(--header-height) 0 0 0;
-    padding: 0 1rem;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
     transition: .5s;
     background-color: #0d0d0c; /* Spotify-like dark background */
     color: #fff; /* Default text color */
 }
+#cs_audio {
+    display: none;
+}
+
+#cs_audioplayer {
+    margin-left: 50px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background-color: #282828; /* Dark background for the player bar */
+    padding: 16px 24px; /* Increased padding for a more spacious feel */
+    color: #fff; /* Text color */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+#cs_play_pause_btn {
+    margin-left: 0; /* Centering the play/pause button */
+    margin-right: 16px;
+    position: relative;
+}
+
+#cs_play_pause_btn i {
+    font-size: 1.8em; /* Larger icons */
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+#cs_audio_current_time,
+#cs_audio_duration {
+    font-size: 0.9em;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.cs_audio_bar {
+    background-color: #535353;
+    width: 10%; /* Độ rộng 100% để căn chỉnh với thanh màu xanh */
+    height: 4px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: visible;
+    flex-grow: 1;
+    margin: 0 16px;
+}
+
+.cs_audio_bar_now {
+    background-color: #1db954;
+    width: 0; /* Độ rộng mặc định khi chưa có tiến trình nào */
+    height: 100%;
+    position: absolute;
+}
+
+.cs_audio_duration_handle,
+.cs_volume_handle {
+    width: 12px;
+    height: 12px;
+    background-color: #1db954;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0; /* Cố định handle về vị trí bên trái */
+}
+
+.cs_volume_handle {
+    top: 50%; /* Center the handle vertically */
+    transform: translateY(-50%);
+}
+
+#cs_audio_sound {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    right: 5px;
+    float: right;
+    margin-left: 15px;
+    top: -2px;
+}
+
+#cs_audio_sound i {
+    font-size: 1.2em;
+    vertical-align: middle;
+    font-size: 1.14em;
+}
+
+.cs_volBar {
+    height: 6px;
+    width: 100px; /* Độ rộng cố định cho thanh âm lượng */
+    background-color: #535353;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin-left: 8px;
+    border-radius: 2px;
+}
+
+.cs_volume {
+    height: 100%;
+    background-color: #1db954;
+    position: absolute;
+}
+
+.cs_audioplayer-container {
+    text-align: center;
+}
+
+.cs_audio_time {
+    position: relative;
+    left: 0;
+    float: left;
+    font-size: 0.87em;
+}
+.cs_song_title {
+    width: 200px; /* Độ rộng cố định của phần tử */
+    overflow: hidden; /* Ẩn bớt nội dung dư thừa khi vượt quá kích thước */
+    white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+    text-overflow: ellipsis; /* Hiển thị dấu chấm ba (...) khi nội dung quá dài */
+}
+
 
 
 
@@ -183,6 +310,54 @@ a {
     cursor: pointer;
 }
 
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #333333;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+    .ui-autocomplete {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 1000; /* Đảm bảo hộp thả xuống hiển thị trên các thành phần khác */
+    }
+
+    /* Tùy chỉnh các mục trong hộp thả xuống */
+    .ui-menu-item {
+        padding: 8px 16px;
+        cursor: pointer;
+    }
+
+    /* Tùy chỉnh các mục khi di chuột qua */
+    .ui-menu-item:hover {
+        background-color: #fff;
+    }
+
+    /* Tùy chỉnh các mục được chọn */
+    .ui-state-active {
+        background-color: #f0f0f0;
+        color: #fff;
+    }
+
+.search-bar input {
+    border: none;
+    background: none;
+    color: #FFFFFF;
+    width: 200px;
+    outline: none;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
 .header_img {
     width: 35px;
     height: 35px;
@@ -199,13 +374,17 @@ a {
 .l-navbar {
     position: fixed;
     top: 0;
-    left: -30%;
+    left: 0;
     width: var(--nav-width);
     height: 100vh;
     background-color: var(--first-color);
     padding: .5rem 1rem 0 0;
     transition: .5s;
     z-index: var(--z-fixed);
+}
+
+.l-navbar.expanded {
+    width: var(--nav-width-expanded); /* Thêm phần này cho chiều rộng khi mở rộng */
 }
 
 .nav {
@@ -236,6 +415,7 @@ a {
 .nav_logo-name {
     color: var(--white-color);
     font-weight: 700;
+    display: none;
 }
 
 .nav_link {
@@ -258,7 +438,7 @@ a {
 }
 
 .body-pd {
-    padding-left: calc(var(--nav-width) + 1rem);
+    padding-left: calc(var(--nav-width) + 0rem);
 }
 
 .active {
@@ -278,10 +458,23 @@ a {
     height: 100vh;
 }
 
+.l-navbar:hover {
+    width: var(--nav-width-expanded);
+}
+
+.l-navbar:hover .nav_logo-name,
+.l-navbar:hover .nav_name {
+    display: block;
+}
+
+.nav_name {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {
     body {
         margin: calc(var(--header-height) + 1rem) 0 0 0;
-        padding-left: calc(var(--nav-width) + 2rem);
+        padding-left: calc(var(--nav-width));
     }
     .header {
         height: calc(var(--header-height) + 1rem);
