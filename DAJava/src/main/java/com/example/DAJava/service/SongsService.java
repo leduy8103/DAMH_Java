@@ -44,5 +44,8 @@ public class SongsService {
         }
         songsRepository.deleteById(id);
     }
+    public List<Songs> findAllSongsByAlbumId(Long albumId) {
+        return songsRepository.findByAlbumAlbumId(albumId); // Sử dụng phương thức đã chỉnh sửa
+    }
 }
 
