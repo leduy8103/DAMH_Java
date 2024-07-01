@@ -146,32 +146,8 @@ public class AdminController {
                           @RequestParam("filePath") MultipartFile file,
                           @RequestParam("imagePath") MultipartFile image,
                           RedirectAttributes redirectAttributes) {
-        // Lưu file âm thanh
-        if (!file.isEmpty()) {
-            try {
-                // Lưu tệp âm thanh vào thư mục src/main/resources/static/images/songAudio
-                String audioDirectory = "src/main/resources/static/images/songAudio";
-                String filePath = saveFile(file, audioDirectory);
-                songs.setFilePath("/images/songAudio/" + file.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Xử lý lỗi lưu file
-            }
-        }
-
-        // Lưu file hình ảnh
-        if (!image.isEmpty()) {
-            try {
-                // Lưu tệp hình ảnh vào thư mục src/main/resources/static/images/songImg
-                String imageDirectory = "src/main/resources/static/images/songImg";
-                String imagePath = saveFile(image, imageDirectory);
-                songs.setImagePath("/images/songImg/" + image.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Xử lý lỗi lưu file
-            }
-        }
-
+        songs.setFilePath("/audio/" + file.getOriginalFilename());
+        songs.setImagePath("/images/songImg/" + image.getOriginalFilename());
         if (songs.getReleaseDate() == null) {
             // Set current date as releaseDate
             songs.setReleaseDate(Calendar.getInstance().getTime());
@@ -180,25 +156,6 @@ public class AdminController {
         songService.addSong(songs);
         return "redirect:/admin/songlist";
     }
-
-    // Method to save file and return the path
-    private String saveFile(MultipartFile file, String directory) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Path uploadPath = Paths.get(directory);
-
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        try (InputStream inputStream = file.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            return filePath.toString();
-        } catch (IOException e) {
-            throw new IOException("Could not save file: " + fileName, e);
-        }
-    }
-
     @GetMapping("/songlist/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Songs song = songService.getSongsById(id)
@@ -215,24 +172,10 @@ public class AdminController {
                              BindingResult result, Model model,
                              @RequestParam(value = "audioFile", required = false) MultipartFile audioFile,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-        if (result.hasErrors()) {
-            model.addAttribute("genres", genresService.getAllGenres());
-            model.addAttribute("albums", albumsService.getAllAlbums());
-            return "/admin/songs/edit-song";
-        }
-
         // Lưu file âm thanh mới hoặc giữ nguyên file cũ
         if (audioFile != null && !audioFile.isEmpty()) {
             String audioFileName = StringUtils.cleanPath(Objects.requireNonNull(audioFile.getOriginalFilename()));
-            String audioUploadDir = "src/main/resources/static/images/songAudio/";
-            try {
-                Files.createDirectories(Paths.get(audioUploadDir));
-                Path audioFilePath = Paths.get(audioUploadDir + audioFileName);
-                Files.copy(audioFile.getInputStream(), audioFilePath, StandardCopyOption.REPLACE_EXISTING);
-                song.setFilePath("/images/songAudio/" + audioFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            song.setFilePath("/audio/songAudio/" + audioFileName);
         } else {
             // Giữ nguyên file cũ nếu không có file mới được chọn
             Songs existingSong = songService.getSongsById(id)
@@ -243,15 +186,7 @@ public class AdminController {
         // Lưu file ảnh mới hoặc giữ nguyên file cũ
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageFileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-            String imageUploadDir = "src/main/resources/static/images/songImg/";
-            try {
-                Files.createDirectories(Paths.get(imageUploadDir));
-                Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
-                Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
-                song.setImagePath("/images/songImg/" + imageFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            song.setImagePath("/images/songImg/" + imageFileName);
         } else {
             // Giữ nguyên file cũ nếu không có file mới được chọn
             Songs existingSong = songService.getSongsById(id)
@@ -295,17 +230,8 @@ public class AdminController {
                            RedirectAttributes redirectAttributes) {
         // Xử lý lưu file hình ảnh
         if (!imageFile.isEmpty()) {
-            try {
-                String imageFileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-                String imageUploadDir = "src/main/resources/static/images/albumImg/";
-                Files.createDirectories(Paths.get(imageUploadDir));
-                Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
-                Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
-                album.setImagePath("/images/albumImg/" + imageFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Xử lý lỗi lưu file
-            }
+            String imageFileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
+            album.setImagePath("/images/albumImg/" + imageFileName);
         }
         if (album.getReleaseDate() == null) {
             // Set current date as releaseDate
@@ -332,24 +258,14 @@ public class AdminController {
                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
         // Xử lý lưu file hình ảnh mới hoặc giữ nguyên file cũ
         if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                String imageFileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-                String imageUploadDir = "src/main/resources/static/images/albumImg/";
-                Files.createDirectories(Paths.get(imageUploadDir));
-                Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
-                Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
-                album.setImagePath("/images/albumImg/" + imageFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Xử lý lỗi lưu file
-            }
+            String imageFileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
+            album.setImagePath("/images/albumImg/" + imageFileName);
         } else {
             // Giữ nguyên file cũ nếu không có file mới được chọn
             Albums existingAlbum = albumsService.getAlbumById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid album Id:" + id));
             album.setImagePath(existingAlbum.getImagePath());
         }
-
         album.setAlbumId(id);
         albumsService.updateAlbum(album);
         return "redirect:/admin/albumlist";
@@ -361,7 +277,6 @@ public class AdminController {
         albumsService.deleteAlbumById(id);
         return "redirect:/admin/albumlist";
     }
-
 
     @Autowired
     private UserService userService;
