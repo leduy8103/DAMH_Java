@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .container {
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h2 {
+            margin: 0;
+        }
+        .content {
+            display: flex;
+            gap: 20px;
+        }
+        .top-result, .songs {
+            background-color: #181818;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .top-result {
+            width: 40%;
+        }
+        .top-result img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .top-result .info {
+            margin-top: 20px;
+        }
+        .top-result .info h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .top-result .info p {
+            color: #b3b3b3;
+        }
+        .top-result .info .play-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            background-color: #1db954;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+        .songs {
+            width: 60%;
+        }
+        .song-title{
+            text-decoration:none;
+            color: #000;
+        }
+        .song-title:hover{
+            text-decoration: underline;
+            color: #000;
+            cursor: pointer;
+        }
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        .song-item:last-child {
+            border-bottom: none;
+        }
+        .song-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+        }
+        .song-info {
+            margin-left: 10px;
+            flex-grow: 1;
+        }
+        .song-info h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .song-info p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #b3b3b3;
+        }
+        .song-duration {
+            color: #b3b3b3;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="content">
+            <div class="top-result" th:if="${searchResults.size() > 0}">
+                <img th:src="@{${searchResults.get(0).imagePath}}" alt="Top result">
+                <div class="info">
+                    <a class="song-title" th:href="@{/home/songs/{id}(id=${searchResults.get(0).songId})}">
+                        <h3 th:text="${searchResults.get(0).title}">Top Song Title</h3>
+                    </a>
+                    <p th:text="'Album • ' + ${searchResults.get(0).album.title}">Album</p>
+                    <button class="play-button">
+                        <span>&#9658;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="songs">
+<!--                <div th:each="song, songStat : ${searchResults}">-->
+<!--                    <div class="song-item">-->
+<!--                        <img th:src="@{${song.imagePath}}" alt="Song image">-->
+<!--                        <div class="song-info">-->
+<!--                            <a class="song-title" th:href="@{/home/songs/{id}(id=${song.songId})}">-->
+<!--                                <h4 th:text="${song.title}">Song Title</h4>-->
+<!--                            </a>-->
+<!--                            <p th:text="'Album • ' + ${song.album.title}">Album</p>-->
+<!--                        </div>-->
+<!--                        <div class="song-duration" th:text="${song.duration}">3:57</div>-->
+<!--                        <div class="add-to-playlist openModalBtn" th:data-song-id="${song.songId}">-->
+<!--                            <i class='bx bx-plus-circle'></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th></th>
+                        <th>Title</th>
+                        <th></th>
+                        <th>Duration</th>
+<!--                        <th>Release Date</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="song, iterStat : ${searchResults}">
+                        <td th:text="${iterStat.count}" style="justify-content:center"></td>
+                        <td>
+                            <button class="btn btn-sm">
+                                <i class='bx bx-play'></i>
+                            </button>
+                        </td>
+                        <td>
+                            <img th:src="@{${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
+                            <a th:href="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}"></a>
+                        </td>
+                        <td>
+                            <div class="add-to-playlist openModalBtn" th:data-song-id="${song.songId}" style="cursor:pointer;">
+                                <i class='bx bx-plus-circle'></i>
+                            </div>
+                        </td>
+                        <td th:text="${song.duration}"></td>
+<!--                        <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
