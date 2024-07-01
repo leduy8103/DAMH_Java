@@ -20,9 +20,13 @@
                 <label for="artistName">Name:</label>
                 <input type="text" id="artistName" th:field="*{artistName}" class="form-control" />
             </div>
+<!--            <div class="form-group">-->
+<!--                <label for="avatar">Avatar URL:</label>-->
+<!--                <input type="text" id="avatar" th:field="*{avatar}" class="form-control" />-->
+<!--            </div>-->
             <div class="form-group">
-                <label for="avatar">Avatar URL:</label>
-                <input type="text" id="avatar" th:field="*{avatar}" class="form-control" />
+                <label for="avatar">Đường dẫn file hình ảnh</label>
+                <input type="file" id="avatar" name="avatar" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="bio">Bio:</label>

@@ -11,11 +11,11 @@
 <body>
 <section layout:fragment="content">
     <div class="container mt-5">
-        <h3>Top Albums</h3>
+        <h3 style="margin-top: 64px;text-align: center;margin-bottom: 20px;">Albums List</h3>
         <div class="row">
-            <div class="col-md-4" th:each="album : ${albums}">
+            <div class="col-md-3" th:each="album : ${albums}">
                 <div class="card mb-4 shadow-sm">
-                    <img class="card-img-top" th:src="@{${album.imagePath}}" alt="Album Image">
+                    <img class="card-img-top" th:src="@{'/images/' + ${album.imagePath}}" alt="Album Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${album.title}"></h5>
                         <p class="card-text" th:text="${album.artist.artistName}"></p>

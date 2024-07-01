@@ -14,7 +14,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
-                <img th:src="@{${album.imagePath}}" alt="Album Image" class="img-fluid">
+                <img th:src="@{'/images/' + ${album.imagePath}}" alt="Album Image" class="img-fluid">
             </div>
             <div class="col-md-8">
                 <h1 th:text="${album.title}"></h1>
@@ -41,7 +41,7 @@
                             </button>
                         </td>
                         <td>
-                            <img th:src="@{${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
+                            <img th:src="@{'/images/' + ${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
                             <a th:href="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}"></a>
                         </td>
                         <td th:text="${song.duration}"></td>

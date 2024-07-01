@@ -20,6 +20,12 @@ public class CommentsService {
     @Autowired
     private CommentsRepository commentsRepository;
 
+    @Autowired
+    private SongsRepository songRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     public List<Comments> getAllComments() {
         return commentsRepository.findAll();
     }
@@ -35,11 +41,6 @@ public class CommentsService {
     public void deleteComment(Long id) {
         commentsRepository.deleteById(id);
     }
-    @Autowired
-    private SongsRepository songRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     public List<Comments> getCommentsBySongId(Long songId) {
         return commentsRepository.findBySongSongId(songId);

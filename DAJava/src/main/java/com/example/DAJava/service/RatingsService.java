@@ -5,13 +5,11 @@ import com.example.DAJava.model.Songs;
 import com.example.DAJava.model.Users;
 import com.example.DAJava.repository.RatingsRepository;
 import com.example.DAJava.repository.SongsRepository;
-import com.example.DAJava.repository.SongsRepository;
 import com.example.DAJava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RatingsService {
@@ -27,10 +25,6 @@ public class RatingsService {
 
     public List<Ratings> getAllRatings() {
         return ratingsRepository.findAll();
-    }
-
-    public Optional<Ratings> getRatingById(Long id) {
-        return ratingsRepository.findById(id);
     }
 
     public Ratings saveRating(Ratings rating) {
@@ -63,5 +57,35 @@ public class RatingsService {
             rating.setRatingValue(ratingValue);
             ratingsRepository.save(rating);
         }
+    }
+
+//    public double getAverageRatingForSong(Long songId) {
+//        List<Ratings> ratings = ratingsRepository.findAllBySong_SongId(songId);
+//        if (ratings.isEmpty()) {
+//            return 0.0; // Trả về 0 nếu chưa có đánh giá nào
+//        }
+//
+//        double sum = 0;
+//        for (Ratings rating : ratings) {
+//            sum += rating.getRatingValue();
+//        }
+//
+//        return sum / ratings.size();
+//    }
+    public double getAverageRatingForSong(Long songId) {
+        List<Ratings> ratings = ratingsRepository.findAllBySong_SongId(songId);
+        if (ratings.isEmpty()) {
+            return 0.0; // Trả về 0 nếu không có đánh giá
+        }
+
+        int totalRating = 0;
+        for (Ratings rating : ratings) {
+            totalRating += rating.getRatingValue();
+        }
+
+        return (double) totalRating / ratings.size();
+    }
+    public List<Ratings> getRatingsBySongId(Long songId) {
+        return ratingsRepository.findAllBySong_SongId(songId);
     }
 }
