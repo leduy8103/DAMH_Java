@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class UserService implements UserDetailsService {
     private IUserRepository userRepository;
     @Autowired
     private IRoleRepository roleRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -60,7 +62,28 @@ public class UserService implements UserDetailsService {
     public Optional<Users> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    public Optional<Users> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
+    public Users processOAuthPostLogin(OAuth2User oauth2User) {
+        String email = oauth2User.getAttribute("email");
+        String pw = oauth2User.getAttribute("password");
+        Optional<Users> existUser = findByEmail(email);
+
+        Users user;
+        if (existUser.isEmpty()) {
+            user = new Users();
+            user.setEmail(email);
+            user.setUsername(email);
+            user.setPassword(new BCryptPasswordEncoder().encode("123"));
+            userRepository.save(user);
+            setDefaultRole(user.getUsername());
+        } else {
+            user = existUser.get();
+        }
+        return user;
+    }
     public void lockUser(String username) {
         userRepository.findByUsername(username).ifPresent(user -> {
             user.setAccountNonLocked(false);

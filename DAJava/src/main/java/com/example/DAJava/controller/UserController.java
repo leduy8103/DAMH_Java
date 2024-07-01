@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,5 +44,22 @@ public class UserController {
         userService.save(user); // Lưu người dùng vào cơ sở dữ liệu
         userService.setDefaultRole(user.getUsername());
         return "redirect:/login"; // Chuyển hướng người dùng tới trang "login"
+    }
+    @GetMapping("/google")
+    public String oauth2LoginSuccessGoogle(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+        Users user = userService.processOAuthPostLogin(oauth2User);
+        model.addAttribute("user", user);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/facebook")
+    public String oauth2LoginSuccessFacebook(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+        Users user = userService.processOAuthPostLogin(oauth2User);
+        model.addAttribute("user", user);
+        return "redirect:/home";
     }
 }

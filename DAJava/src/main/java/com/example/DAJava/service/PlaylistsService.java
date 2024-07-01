@@ -1,19 +1,39 @@
 package com.example.DAJava.service;
 
-import com.example.DAJava.model.Playlists;
+import com.example.DAJava.model.*;
+import com.example.DAJava.repository.PlaylistDetailRepository;
 import com.example.DAJava.repository.PlaylistsRepository;
+import com.example.DAJava.repository.SongsRepository;
+import com.example.DAJava.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaylistsService {
 
     @Autowired
     private PlaylistsRepository playlistsRepository;
-
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SongsRepository songsRepository;
+    @Autowired
+    private PlaylistDetailRepository playlistDetailRepository;
+    public void addPlaylist(String playlistName, String username) {
+        Users user = userRepository.findByUsername(username);
+        Playlists playlists = new Playlists();
+        playlists.setName(playlistName);
+        playlists.setDescription("none");
+        playlists.setUser(user);
+        playlistsRepository.save(playlists);
+    }
     public List<Playlists> getAllPlaylists() {
         return playlistsRepository.findAll();
     }
@@ -22,11 +42,50 @@ public class PlaylistsService {
         return playlistsRepository.findById(id);
     }
 
+    public List<Playlists> getAllPlaylistByUser(String username){
+        return playlistsRepository.findByUser_username(username);
+    }
+
     public Playlists savePlaylist(Playlists playlist) {
         return playlistsRepository.save(playlist);
     }
-
+    @Transactional
+    public void deletePlaylistDetailsByPlaylistId(Long playlistId) {
+        // Xoá các playlistDetail có liên quan đến playlistId
+        List<PlaylistDetails> playlistDetails = playlistDetailRepository.findByPlaylists_PlaylistId(playlistId);
+        for (PlaylistDetails playlistDetail : playlistDetails) {
+            playlistDetailRepository.delete(playlistDetail);
+        }
+    }
+    @Transactional
     public void deletePlaylist(Long id) {
         playlistsRepository.deleteById(id);
     }
+
+    public void addSongToPlaylist(Long playlistId, Long songId) {
+        Playlists playlist = playlistsRepository.findById(playlistId)
+                .orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
+        Songs song = songsRepository.findById(songId)
+                .orElseThrow(() -> new IllegalArgumentException("Song not found"));
+
+        PlaylistDetails playlistDetail = new PlaylistDetails();
+        playlistDetail.setPlaylists(playlist);
+        playlistDetail.setSong(song);
+
+        playlistDetailRepository.save(playlistDetail);
+    }
+
+    public List<Songs> getSongsInPlaylist(Long playlistId) {
+        List<PlaylistDetails> playlistDetails = playlistDetailRepository.findByPlaylists_PlaylistId(playlistId);
+        return playlistDetails.stream().map(PlaylistDetails::getSong).collect(Collectors.toList());
+    }
+    public void removeSongFromPlaylist(Long playlistId, Long songId) {
+        Optional<PlaylistDetails> playlistDetails = playlistDetailRepository.findByPlaylists_PlaylistIdAndSong_SongId(playlistId, songId);
+        if (playlistDetails.isPresent()) {
+            playlistDetailRepository.deleteById(playlistDetails.get().getPlaylistDetailId());
+        } else {
+            throw new IllegalArgumentException("Song not found in playlist");
+        }
+    }
+
 }

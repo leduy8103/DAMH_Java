@@ -39,7 +39,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/css/**", "/js/**", "/", "/oauth/**", "/register", "/error", "/images/**", "/cart", "/cart/**", "/login")
+                                .requestMatchers(
+                                        "/css/**", "/js/**", "/", "/oauth/**", "/register", "/error", "/images/**", "/cart", "/cart/**", "/login"
+                                )
                                 .permitAll() // Cho phép truy cập không cần xác thực.
                                 .requestMatchers("/admin/**") // Chỉ cho phép ADMIN truy cập.
                                 .permitAll()
@@ -64,7 +66,11 @@ public class SecurityConfig {
                         .failureHandler(customAuthenticationFailureHandler())
                         .permitAll()
                 )
-//                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/google", true)
+                        .failureUrl("/login?error")
+                )
                 .rememberMe(rememberMe -> rememberMe
                         .key("hutech")
                         .rememberMeCookieName("hutech")

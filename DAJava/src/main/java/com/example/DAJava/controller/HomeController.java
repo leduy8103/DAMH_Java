@@ -1,15 +1,21 @@
 package com.example.DAJava.controller;
 
 import com.example.DAJava.model.Albums;
-import com.example.DAJava.service.AlbumsService;
-import com.example.DAJava.service.CommentsService;
-import com.example.DAJava.service.RatingsService;
-import com.example.DAJava.service.SongsService;
+import com.example.DAJava.model.Playlists;
+import com.example.DAJava.model.Users;
+import com.example.DAJava.service.*;
 import com.example.DAJava.model.Songs;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,31 +29,50 @@ public class HomeController {
     private SongsService songsService;
     @Autowired
     private AlbumsService albumsService;
+    @Autowired
+    private PlaylistsService playlistsService;
+    @Autowired
+    private UserService userService;
     @GetMapping
-    public String index(Model model) {
+    public String index(Model model, Principal principal) {
         List<Albums> albums = albumsService.getAllAlbums();
         model.addAttribute("albums", albums);
+        List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
+        model.addAttribute("playlists", playlists);
         return "/home/index"; // Đảm bảo trả về "home/index"
     }
 
     @GetMapping("/search")
+    public String searchSongs(@RequestParam String keyword, Model model, Principal principal) {
+        List<Songs> results = songService.searchSongsByName(keyword);
+        model.addAttribute("searchResults", results);
+        List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
+        model.addAttribute("playlists", playlists);
+        return "/home/searchResult";
+    }
+
+    @GetMapping("/searchAutocomplete")
     @ResponseBody
     public List<Songs> searchSongs(@RequestParam("query") String query) {
         return songsService.searchSongsByName(query);
     }
+
     @GetMapping("/albums/{id}")
-    public String getAlbumById(@PathVariable("id") Long id, Model model) {
+    public String getAlbumById(@PathVariable("id") Long id, Model model, Principal principal) {
         Optional<Albums> albumOpt = albumsService.getAlbumById(id);
         if (albumOpt.isPresent()) {
             Albums album = albumOpt.get();
             List<Songs> songs = songsService.findAllSongsByAlbumId(id);
             model.addAttribute("album", album);
+            List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
+            model.addAttribute("playlists", playlists);
             model.addAttribute("songs", songs);
             return "home/albumDetail";
         } else {
             return "redirect:/home"; // Nếu không tìm thấy album, quay về trang chủ
         }
     }
+
     @GetMapping("/songs/{id}")
     public String getSongById(@PathVariable("id") Long id, Model model) {
         Optional<Songs> songOpt = songsService.getSongsById(id);
@@ -56,9 +81,10 @@ public class HomeController {
             model.addAttribute("song", song);
             return "home/songDetail";
         } else {
-            return "redirect:/home"; // Nếu không tìm thấy bài hát, quay về trang chủ
+            return "redirect:/home";
         }
     }
+
     @Autowired
     private SongsService songService;
 
@@ -67,6 +93,7 @@ public class HomeController {
 
     @Autowired
     private RatingsService ratingService;
+
     @PostMapping("/rate")
     public String rateSong(@RequestParam Long songId, @RequestParam int ratingValue, Principal principal) {
         ratingService.rateSong(songId, ratingValue, principal.getName());
@@ -84,4 +111,50 @@ public class HomeController {
         commentService.deleteComment(commentId, principal.getName());
         return "redirect:/home/songs/{commentId}";
     }
+
+    //Playlist
+
+    @GetMapping("/playlist/{playlistId}")
+    public String getPlaylistById(@PathVariable("playlistId") Long playlistId, Model model, Principal principal) {
+        Optional<Playlists> playlistOpt = playlistsService.getPlaylistById(playlistId);
+        if (playlistOpt.isPresent()) {
+            Playlists playlist = playlistOpt.get();
+            List<Songs> songs = playlistsService.getSongsInPlaylist(playlistId);
+            model.addAttribute("playlist", playlist);
+            List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
+            model.addAttribute("playlists", playlists);
+            model.addAttribute("songs", songs);
+            return "home/playlistDetail";
+        } else {
+            return "redirect:/home"; // Redirect to home if playlist not found
+        }
+    }
+
+    @GetMapping("/addPlaylist")
+    public String addPlaylist(@RequestParam String playlistName, Principal principal) {
+        playlistsService.addPlaylist(playlistName, principal.getName());
+        return "redirect:/home";
+    }
+
+    @GetMapping("/addToPlaylist")
+    @ResponseBody
+    public ResponseEntity<String> addToPlaylist(@RequestParam Long playlistId, @RequestParam Long songId) {
+        playlistsService.addSongToPlaylist(playlistId, songId);
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/deletePlaylist/{playlistId}")
+    public String deletePlaylist(@PathVariable("playlistId") Long playlistId) {
+        playlistsService.deletePlaylistDetailsByPlaylistId(playlistId); // Xoá các playlistDetail liên quan
+        playlistsService.deletePlaylist(playlistId); // Xoá playlist
+        return "redirect:/home";
+    }
+
+    @GetMapping("/removeFromPlaylist")
+    public String removeFromPlaylist(@RequestParam Long playlistId, @RequestParam Long songId) {
+        playlistsService.removeSongFromPlaylist(playlistId, songId);
+        return "redirect:/home/playlist/" + playlistId;
+    }
+
+
 }
