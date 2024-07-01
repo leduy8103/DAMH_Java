@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${playlist.name}">Playlist Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="https://th.bing.com/th/id/OIP.UevrbSUQwqE5b2j7sg6sqQHaHa?rs=1&pid=ImgDetMain" alt="Album Image" class="img-fluid">
+            </div>
+            <div class="col-md-8">
+                <h1 th:text="${playlist.name}">Playlist Name</h1>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Duration</th>
+                        <th>Release Date</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="song, iterStat : ${songs}">
+                        <td th:text="${iterStat.count}" style="justify-content:center"></td>
+                        <td>
+                            <button class="btn btn-sm">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <img th:src="@{${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
+                            <a th:href="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}"></a>
+                        </td>
+                        <td th:text="${song.duration}"></td>
+                        <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>
+                        <td>
+                            <a th:href="@{'/home/removeFromPlaylist?playlistId=' + ${playlist.playlistId} + '&songId=' + ${song.songId}}"
+                               class="btn btn-sm btn-remove-song"
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?');">
+                                <i class="fas fa-trash"></i> Xóa
+                            </a>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function removeFromPlaylist(playlistId, songId) {
+        if (confirm("Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?")) {
+            window.location.href = "/home/removeFromPlaylist?playlistId=" + playlistId + "&songId=" + songId;
+        }
+    }
+</script>
+
+</body>
+</html>
