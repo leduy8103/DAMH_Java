@@ -43,20 +43,21 @@ public class HomeController {
     private UserService userService;
     @GetMapping
     public String index(Model model, Principal principal) {
+        return "home/index";
+    }
 
-    @Autowired
-    private CommentsService commentService;
-
-    @Autowired
-    private RatingsService ratingService;
+//    @Autowired
+//    private CommentsService commentService;
+//
+//    @Autowired
+//    private RatingsService ratingService;
 
     @GetMapping("/albumList")
-    public String albumList(Model model) {
+    public String albumList(Model model, Principal principal) {
         List<Albums> albums = albumsService.getAllAlbums();
         model.addAttribute("albums", albums);
         List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
         model.addAttribute("playlists", playlists);
-        return "/home/index"; // Đảm bảo trả về "home/index"
         return "/home/albumList"; // Đảm bảo trả về "home/index"
     }
 
