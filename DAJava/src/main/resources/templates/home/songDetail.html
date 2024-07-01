@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}">
+<head>
+    <title>Chi Tiết Bài Hát</title>
+    <link href="/css/styleSong.css" rel="stylesheet">
+    <!-- Thêm liên kết tới Font Awesome để sử dụng biểu tượng ngôi sao -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .controls button {
+        padding: 0;
+        border: none;
+        background: none;
+        width: 6%;
+        height: auto;
+        display: inline-block;
+        }
+        .controls button img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="song-detail">
+            <img th:src="@{'/images/' + ${song.imagePath}}" alt="Album Art">
+            <div class="song-info">
+                <p>Bài hát</p>
+                <h1 th:text="${song.title}">Name</h1>
+                <p>Artist: <span th:text="${song.album.artist.artistName}"></span></p>
+                <p>Album: <span th:text="${song.album.title}"></span></p>
+                <p>Release Date: <span th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></span></p>
+                <p>Duration: <span th:text="${song.duration}"></span></p>
+                <div class="average-rating">
+                    <h3>Tổng đánh giá</h3>
+                    <p>
+                        <span th:text="${averageRating}"></span>
+                        <i class="fas fa-star"></i> <!-- Biểu tượng ngôi sao từ Font Awesome -->
+                        (từ <span th:text="${ratings.size()}"></span> lượt đánh giá)
+                    </p>
+                </div>
+
+                <div class="controls">
+                    <button><img src="/images/play-icon.png"></button>
+                    <button><img src="/images/add-icon.png"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <!-- Form đánh giá -->
+                <form th:action="@{/home/rate}" method="post">
+                    <input type="hidden" name="songId" th:value="${song.songId}">
+                    <h3>Đánh giá</h3>
+                    <div class="rating">
+                        <input type="radio" id="star5" name="ratingValue" value="5" required />
+                        <label for="star5" title="5 stars">&#9733;</label>
+                        <input type="radio" id="star4" name="ratingValue" value="4" />
+                        <label for="star4" title="4 stars">&#9733;</label>
+                        <input type="radio" id="star3" name="ratingValue" value="3" />
+                        <label for="star3" title="3 stars">&#9733;</label>
+                        <input type="radio" id="star2" name="ratingValue" value="2" />
+                        <label for="star2" title="2 stars">&#9733;</label>
+                        <input type="radio" id="star1" name="ratingValue" value="1" />
+                        <label for="star1" title="1 star">&#9733;</label>
+                    </div>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                    </div>
+                </form>
+                <div id="successAlert" class="alert alert-success d-none" role="alert">
+                    Đánh giá thành công!
+                </div>
+            </div>
+        </div>
+
+        <div class="row comment-section">
+            <div class="col-md-8">
+                <h3>Bình luận</h3>
+                <!-- Danh sách bình luận -->
+                <div id="comment-section">
+                    <div th:each="comment : ${comments}">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <!-- Hình đại diện của người dùng -->
+                                <!-- <img th:src="/images/login-bg.png" alt="Avatar" class="rounded-circle"> -->
+                                <!-- Tên người dùng -->
+                                <span class="font-weight-bold" th:text="${comment.user.username}"></span>
+                                <!-- Thời gian bình luận -->
+                                <span class="text-muted" th:text="${#dates.format(comment.date, 'dd/MM/yyyy HH:mm')}"></span>
+                                <!-- Nội dung bình luận -->
+                                <p class="mt-2 mb-0" th:text="${comment.text}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form thêm bình luận -->
+                <form th:action="@{/home/comment}" method="post">
+                    <input type="hidden" name="songId" th:value="${song.songId}">
+                    <div class="form-group">
+                        <textarea class="form-control" name="text" rows="3" placeholder="Viết bình luận của bạn..." required></textarea>
+                    </div>
+                    <div class="input-group-append">
+                        <button style="margin-bottom: 60px;" type="submit" class="btn btn-primary">Gửi bình luận</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

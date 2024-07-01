@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${album.title}">Album Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img th:src="@{'/images/' + ${album.imagePath}}" alt="Album Image" class="img-fluid">
+            </div>
+            <div class="col-md-8">
+                <h1 th:text="${album.title}"></h1>
+                <p>Artist: <span th:text="${album.artist.artistName}"></span></p>
+                <p>Genre: <span th:text="${album.genre.name}"></span></p>
+                <p>Release Date: <span th:text="${#dates.format(album.releaseDate, 'yyyy-MM-dd')}"></span></p>
+                <h3>Songs</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Duration</th>
+                        <th>Release Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="song, iterStat : ${songs}">
+                        <td th:text="${iterStat.count}" style="justify-content:center"></td>
+                        <td>
+                            <button class="btn btn-sm">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <img th:src="@{'/images/' + ${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
+                            <a th:href="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}"></a>
+                        </td>
+                        <td th:text="${song.duration}"></td>
+                        <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

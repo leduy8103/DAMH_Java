@@ -3,31 +3,22 @@ package com.example.DAJava.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 @Setter
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PlaylistDetails")
+@Table(name = "playlist_details")
 public class PlaylistDetails {
-    @EmbeddedId
-    private PlaylistDetailId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long playlistDetailId;
 
     @ManyToOne
-    @MapsId("playlistId")
-    @JoinColumn(name = "playlistId")
+    @JoinColumn(name = "playlistId", referencedColumnName = "playlistId")
     private Playlists playlists;
 
     @ManyToOne
-    @MapsId("songId")
-    @JoinColumn(name = "songId")
+    @JoinColumn(name = "songId", referencedColumnName = "songId")
     private Songs song;
-}
-
-@Embeddable
-class PlaylistDetailId implements Serializable {
-    private Long playlistId;
-    private Long songId;
 }

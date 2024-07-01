@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SongsRepository extends JpaRepository<Songs, Long> {
     List<Songs> findByTitleContainingIgnoreCase(String title);
+    List<Songs> findByAlbumAlbumId(Long albumId); // Chỉnh sửa tại đây
 }

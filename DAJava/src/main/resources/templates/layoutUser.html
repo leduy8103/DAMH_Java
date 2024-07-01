@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
@@ -9,15 +11,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <link href="/css/styleUser.css" rel="stylesheet">
 </head>
 <body id="body-pd">
 <header class="header d-flex align-items-center justify-content-between" id="header">
-    <div class="search-bar">
-        <input id="search" type="text" placeholder="Tìm kiếm...">
-        <button>🔍</button>
-    </div>
-    <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
+    <form action="/home/search" method="get">
+        <div class="search-bar">
+            <input id="search" name="keyword" type="text" placeholder="Tìm kiếm...">
+            <button type="submit">🔍</button>
+        </div>
+    </form>
+    <div class="header_img"><img src="https://i.imgur.com/hczKIze.jpg" alt=""></div>
 </header>
 <div class="l-navbar" id="nav-bar">
     <nav class="nav">
@@ -41,33 +46,79 @@
                 </a>
                 <a class="nav_link" data-url="/home/trang2">
                     <i class='bx bx-user nav_icon'></i>
-                    <span class="nav_name">Users</span>
+                    <span class="nav_name">Ca sĩ</span>
                 </a>
-
-                <span class="nav_link" data-url="#">
-                        <i class='bx bx-message-square-detail nav_icon'></i>
-                        <span class="nav_name">Messages</span>
-                    </span>
-                <span class="nav_link" data-url="#">
+                <a href="#" class="nav_link">
+                    <i class='bx bx-message-square-detail nav_icon'></i>
+                    <span class="nav_name">Thể loại</span>
+                </a>
+                <a href="#" class="nav_link">
+                    <div>
                         <i class='bx bx-bookmark nav_icon'></i>
-                        <span class="nav_name">Bookmark</span>
-                    </span>
-                <span class="nav_link" data-url="#">
-                        <i class='bx bx-folder nav_icon'></i>
-                        <span class="nav_name">Files</span>
-                    </span>
-                <span class="nav_link" data-url="#">
-                        <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
-                        <span class="nav_name">Stats</span>
-                    </span>
+                    </div>
+                    <span class="nav_name" id="playlist-link">Playlist</span>
+                    <div class="nav_icon_plus">
+                        <i class='bx bx-plus-circle nav_icon' id="add-playlist-btn"></i>
+                    </div>
+                </a>
+                <div class="playlist-dropdown">
+                    <ul id="playlist-list" style="display: none;">
+                        <!-- Thymeleaf iteration over playlists -->
+                        <li th:each="playlist : ${playlists}">
+                            <div class="playlist-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a th:href="@{/home/playlist/{playlistId}(playlistId=${playlist.playlistId})}">
+                                        <span th:text="${playlist.name}">Playlist Name</span>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a th:href="@{/home/deletePlaylist/{playlistId}(playlistId=${playlist.playlistId})}">
+                                        <i class='bx bxs-trash'></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <form id="add-playlist-form" action="/home/addPlaylist" method="get" style="display: none; margin: -24px 0 0 20px;">
+                    <div class="input-group mb-3">
+                        <input type="text" id="playlist-name" class="form-control" name="playlistName" placeholder="Tên playlist mới" required>
+                        <button class="btn btn-success" type="submit" id="save-playlist-btn">Lưu</button>
+                    </div>
+                </form>
+                <a href="#" class="nav_link">
+                    <i class='bx bx-folder nav_icon'></i>
+                    <span class="nav_name">Files</span>
+                </a>
+                <a href="#" class="nav_link">
+                    <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
+                    <span class="nav_name">Stats</span>
+                </a>
             </div>
         </div>
-        <span class="nav_link" data-url="#">
-                <i class='bx bx-log-out nav_icon'></i>
-                <span class="nav_name">SignOut</span>
-            </span>
+        <a href="#" class="nav_link">
+            <i class='bx bx-log-out nav_icon'></i>
+            <span class="nav_name">SignOut</span>
+        </a>
     </nav>
 </div>
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <!-- Thymeleaf iteration over playlists -->
+        <div th:each="playlist : ${playlists}" class="playlist-item" th:data-playlist-id="${playlist.playlistId}" onclick="selectPlaylist(this)">
+            <div class="playlist-info">
+                <h4 th:text="${playlist.name}">Playlist Name</h4>
+                <p th:text="'Created by ' + ${playlist.user.id}">Created by</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="addToPlaylistForm" action="/home/addToPlaylist" method="post" style="display:none;">
+    <input type="hidden" name="playlistId" id="playlistId">
+    <input type="hidden" name="songId" id="songId">
+</form>
 <audio id="cs_audio" controls>
     <source src="" type="audio/mpeg">
 </audio>
@@ -85,6 +136,7 @@
                 <i class="far fa-play-circle" id="cs_audio_play"></i>
                 <i class="far fa-pause-circle" id="cs_audio_pause"></i>
             </span>
+
         <span id="cs_audio_sound" class="cs_audio_sound">
                 <i class="fas fa-volume-down"></i>
                 <div class="cs_volBar">
@@ -92,12 +144,14 @@
                     <div id="cs_volume_handle" class="cs_volume_handle"></div>
                 </div>
             </span>
+
         <div id="cs_song_title" class="cs_song_title"></div>
         <div class="cs_audio_bar">
             <div class="cs_audio_bar_now"></div>
             <div class="cs_audio_bar_loaded"></div>
             <div id="cs_audio_duration_handle" class="cs_audio_duration_handle"></div>
         </div>
+
         <div id="cs_audio_duration" class="cs_audio_duration"></div>
     </div>
 </div>
@@ -110,7 +164,7 @@
         $("#search").autocomplete({
             source: function(request, response) {
                 $.ajax({
-                    url: "/home/search",
+                    url: "/home/searchAutocomplete",
                     data: { query: request.term },
                     success: function(data) {
                         response($.map(data, function(item) {
@@ -134,5 +188,65 @@
         loadPage(url);
     });
 </script>
+<script>
+    // Script for handling modal and AJAX request
+    const modal = document.getElementById("playlistModal");
+    const btns = document.querySelectorAll(".openModalBtn");
+    const span = document.getElementsByClassName("close")[0];
+    let selectedSongId = null;
+
+    btns.forEach(btn => {
+        btn.onclick = function() {
+            selectedSongId = btn.getAttribute('data-song-id');
+            modal.style.display = "block";
+        }
+    });
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function selectPlaylist(element) {
+        const selectedPlaylistId = element.getAttribute('data-playlist-id');
+
+        // AJAX request
+        $.ajax({
+            url: '/home/addToPlaylist',
+            type: 'GET',
+            data: {
+                playlistId: selectedPlaylistId,
+                songId: selectedSongId
+            },
+            success: function(response) {
+                alert('Đã thêm bài hát vào playlist thành công!');
+                modal.style.display = 'none';
+            },
+            error: function(xhr, status, error) {
+                alert('Có lỗi xảy ra khi thêm bài hát vào playlist.');
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        const playlistLink = document.getElementById('playlist-link');
+        const playlistList = document.getElementById('playlist-list');
+
+        playlistLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            playlistList.style.display = (playlistList.style.display === 'block') ? 'none' : 'block';
+        });
+    });
+</script>
+
+
+
 </body>
 </html>

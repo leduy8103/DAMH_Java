@@ -1,28 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layoutUser}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}"
+>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <style>
-        body {
-            background-color: white;
-            color: black;
-        }
-    </style>
+    <title>Home</title>
 </head>
 <body>
 <section layout:fragment="content">
-    <ul>
-        <tr th:each="song : ${songs}">
-            <li>
-                <a href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" th:text="${song.title}">Tên bài hát</a>
-            </li>
-        </tr>
-    </ul>
+
 </section>
 </body>
 </html>

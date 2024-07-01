@@ -1,7 +1,7 @@
 package com.example.DAJava.controller;
 
-import com.example.DAJava.model.Songs;
 import com.example.DAJava.service.SongsService;
+import com.example.DAJava.model.Songs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,18 +15,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/home")
 public class HomeController {
+
     @Autowired
     private SongsService songsService;
 
-    @GetMapping("/trang1")
-    public String Index(Model model) {
-        model.addAttribute("songs", songsService.getAllSongs());
+    @GetMapping
+    public String Index() {
         return "/home/index";
-    }
-    @GetMapping("/trang2")
-    public String Home(Model model) {
-        model.addAttribute("songs", songsService.getAllSongs());
-        return "/home/home1";
     }
 
     @GetMapping("/search")
