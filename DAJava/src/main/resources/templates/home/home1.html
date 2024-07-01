@@ -19,13 +19,16 @@
     <ul>
         <tr th:each="song : ${songs}">
             <li>
-                <button type="button" th:attr="style='width: 40px; height: 40px; background-image: url(\'' + ${song.imagePath} + '\');'" onclick="cspd_change_music('${song.filePath}'); updateSongTitle(this);">
-                    <span th:text="${song.title}">Tên bài hát</span>
-                </button>
+                <a href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" th:text="${song.title}">Tên bài hát</a>
             </li>
         </tr>
-
     </ul>
 </section>
+<script>
+    function selectSong(filePath, title) {
+        localStorage.setItem('selectedSong', JSON.stringify({ filePath: filePath, title: title }));
+        loadPage('/path/to/layoutUser.html');  // Thay đổi đường dẫn tương ứng
+    }
+</script>
 </body>
 </html>

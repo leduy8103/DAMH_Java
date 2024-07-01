@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,11 @@
     <link href="/css/styleUser.css" rel="stylesheet">
 </head>
 <body id="body-pd">
-<header class="header" id="header">
-    <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
+<header class="header d-flex align-items-center justify-content-between" id="header">
+    <div class="search-bar">
+        <input id="search" type="text" placeholder="Tìm kiếm...">
+        <button>🔍</button>
+    </div>
     <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
 </header>
 <div class="l-navbar" id="nav-bar">
@@ -23,75 +27,111 @@
                 <span class="nav_logo-name">BBBootstrap</span>
             </a>
             <div class="nav_list">
-                <a href="#" class="nav_link active">
+<!--                    <span class="nav_link active" data-url="/home/trang1">-->
+<!--                        <i class='bx bx-grid-alt nav_icon'></i>-->
+<!--                        <span class="nav_name">Dashboard</span>-->
+<!--                    </span>-->
+<!--                <span class="nav_link" data-url="/home/trang2">-->
+<!--                        <i class='bx bx-user nav_icon'></i>-->
+<!--                        <span class="nav_name">Users</span>-->
+<!--                    </span>-->
+                <a class="nav_link active" data-url="/home/trang1">
                     <i class='bx bx-grid-alt nav_icon'></i>
                     <span class="nav_name">Dashboard</span>
                 </a>
-                <a href="#" class="nav_link">
+                <a class="nav_link" data-url="/home/trang2">
                     <i class='bx bx-user nav_icon'></i>
                     <span class="nav_name">Users</span>
                 </a>
-                <a href="#" class="nav_link">
-                    <i class='bx bx-message-square-detail nav_icon'></i>
-                    <span class="nav_name">Messages</span>
-                </a>
-                <a href="#" class="nav_link">
-                    <i class='bx bx-bookmark nav_icon'></i>
-                    <span class="nav_name">Bookmark</span>
-                </a>
-                <a href="#" class="nav_link">
-                    <i class='bx bx-folder nav_icon'></i>
-                    <span class="nav_name">Files</span>
-                </a>
-                <a href="#" class="nav_link">
-                    <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
-                    <span class="nav_name">Stats</span>
-                </a>
+
+                <span class="nav_link" data-url="#">
+                        <i class='bx bx-message-square-detail nav_icon'></i>
+                        <span class="nav_name">Messages</span>
+                    </span>
+                <span class="nav_link" data-url="#">
+                        <i class='bx bx-bookmark nav_icon'></i>
+                        <span class="nav_name">Bookmark</span>
+                    </span>
+                <span class="nav_link" data-url="#">
+                        <i class='bx bx-folder nav_icon'></i>
+                        <span class="nav_name">Files</span>
+                    </span>
+                <span class="nav_link" data-url="#">
+                        <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
+                        <span class="nav_name">Stats</span>
+                    </span>
             </div>
         </div>
-        <a href="#" class="nav_link">
-            <i class='bx bx-log-out nav_icon'></i>
-            <span class="nav_name">SignOut</span>
-        </a>
+        <span class="nav_link" data-url="#">
+                <i class='bx bx-log-out nav_icon'></i>
+                <span class="nav_name">SignOut</span>
+            </span>
     </nav>
 </div>
-<!--Container Main start-->
-<div class="height-100 bg-light">
-    <h4>Main Components</h4>
+<audio id="cs_audio" controls>
+    <source src="" type="audio/mpeg">
+</audio>
+<section class="content" id="content">
+    <section layout:fragment="content">
+        <!-- Content will be injected here -->
+    </section>
+</section>
+<div class="cs_audioplayer-container">
+    <div id="cs_audioplayer">
+            <span class="cs_audio_time">
+                <span id="cs_audio_current_time">0:00</span>
+            </span>
+        <span id="cs_play_pause_btn" class="cs_play_pause_btn">
+                <i class="far fa-play-circle" id="cs_audio_play"></i>
+                <i class="far fa-pause-circle" id="cs_audio_pause"></i>
+            </span>
+        <span id="cs_audio_sound" class="cs_audio_sound">
+                <i class="fas fa-volume-down"></i>
+                <div class="cs_volBar">
+                    <div class="cs_volume"></div>
+                    <div id="cs_volume_handle" class="cs_volume_handle"></div>
+                </div>
+            </span>
+        <div id="cs_song_title" class="cs_song_title"></div>
+        <div class="cs_audio_bar">
+            <div class="cs_audio_bar_now"></div>
+            <div class="cs_audio_bar_loaded"></div>
+            <div id="cs_audio_duration_handle" class="cs_audio_duration_handle"></div>
+        </div>
+        <div id="cs_audio_duration" class="cs_audio_duration"></div>
+    </div>
 </div>
-<!--Container Main end-->
+<script src="/js/layoutUser.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-        const showNavbar = (toggleId, navId, bodyId, headerId) => {
-            const toggle = document.getElementById(toggleId),
-            nav = document.getElementById(navId),
-            bodypd = document.getElementById(bodyId),
-            headerpd = document.getElementById(headerId);
-
-            // Validate that all variables exist
-            if(toggle && nav && bodypd && headerpd){
-                toggle.addEventListener('click', () => {
-                    // show navbar
-                    nav.classList.toggle('show');
-                    // change icon
-                    toggle.classList.toggle('bx-x');
-                    // add padding to body
-                    bodypd.classList.toggle('body-pd');
-                    // add padding to header
-                    headerpd.classList.toggle('body-pd');
+    $(document).ready(function() {
+        $("#search").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "/home/search",
+                    data: { query: request.term },
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            return {
+                                label: item.title,
+                                value: item.title
+                            };
+                        }));
+                    }
                 });
-            }
-        }
-        showNavbar('header-toggle','nav-bar','body-pd','header');
-        /*===== LINK ACTIVE =====*/
-        const linkColor = document.querySelectorAll('.nav_link');
-        function colorLink(){
-            if(linkColor){
-                linkColor.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            }
-        }
-        linkColor.forEach(l => l.addEventListener('click', colorLink));
+            },
+            minLength: 2
+        });
+    });
+
+    $('.nav_link').click(function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+        $('.nav_link').removeClass('active');
+        $(this).addClass('active');
+        var url = $(this).data('url');
+        loadPage(url);
     });
 </script>
 </body>

@@ -2,49 +2,37 @@ var audio_id = document.getElementById("cs_audio");
 var audio_vol = audio_id.volume;
 audio_id.volume = 0.5;
 
-// Thử catch nếu không thể lấy được metadata của audio
-try {
+function updateDuration() {
     var measuredTime = new Date(null);
-    measuredTime.setSeconds(audio_id.duration); // specify value of SECONDS
+    measuredTime.setSeconds(audio_id.duration);
     var MHSTime = measuredTime.toISOString().substr(11, 8);
-    var a = MHSTime.split(':'); // split it at the colons
+    var a = MHSTime.split(':');
     var minutes = (+a[0]) * 60 + (+a[1]);
     document.getElementById("cs_audio_duration").innerHTML = minutes + ":" + ((+a[2]) % 60);
-} catch (err) {
-    audio_id.addEventListener('loadedmetadata', function() {
-        var measuredTime = new Date(null);
-        measuredTime.setSeconds(audio_id.duration); // specify value of SECONDS
-        var MHSTime = measuredTime.toISOString().substr(11, 8);
-        var a = MHSTime.split(':'); // split it at the colons
-        var minutes = (+a[0]) * 60 + (+a[1]);
-        document.getElementById("cs_audio_duration").innerHTML = minutes + ":" + ((+a[2]) % 60);
-    });
 }
+
+audio_id.addEventListener('loadedmetadata', updateDuration);
 
 audio_id.ontimeupdate = function() {
     var audio_currentTime = audio_id.currentTime;
     var playingPercentage = (audio_currentTime / audio_id.duration) * 100;
     document.getElementsByClassName("cs_audio_bar_now")[0].style.width = playingPercentage + "%";
 
-    var measuredTime = new Date(null);
-    measuredTime.setSeconds(audio_currentTime); // specify value of SECONDS
-    var MHSTime = measuredTime.toISOString().substr(11, 8);
-    var spilited_time = MHSTime.split(':'); // split it at the colons
-    var minutes = (+spilited_time[0]) * 60 + (+spilited_time[1]);
-    document.getElementById("cs_audio_current_time").innerHTML = minutes + ":" + ((+spilited_time[2]) % 60);
+    // Cập nhật vị trí của handle
+    document.getElementById("cs_audio_duration_handle").style.left = `calc(${playingPercentage}% - 4px)`;
 
+    // Cập nhật thời gian hiện tại
+    var minutes = Math.floor(audio_currentTime / 60);
+    var seconds = Math.floor(audio_currentTime % 60).toString().padStart(2, '0');
+    document.getElementById("cs_audio_current_time").innerHTML = minutes + ":" + seconds;
+
+    // Hiển thị nút phát/tạm dừng
     if (audio_id.paused) {
         document.getElementById("cs_audio_play").style.display = "inline-block";
         document.getElementById("cs_audio_pause").style.display = "none";
     } else {
         document.getElementById("cs_audio_pause").style.display = "inline-block";
         document.getElementById("cs_audio_play").style.display = "none";
-    }
-
-    if (audio_id.volume == 0) {
-        document.getElementById("cs_audio_sound").style.color = "#ff8935";
-    } else {
-        document.getElementById("cs_audio_sound").style.color = "#fff";
     }
 };
 
@@ -81,11 +69,6 @@ document.onkeydown = function(event) {
                     audio_id.volume = 1;
                 }
             }
-            if (audio_id.volume == 0) {
-                document.getElementById("cs_audio_sound").style.color = "#ff8935";
-            } else {
-                document.getElementById("cs_audio_sound").style.color = "#fff";
-            }
             break;
         case 39:
             event.preventDefault();
@@ -102,11 +85,6 @@ document.onkeydown = function(event) {
                     audio_id.volume = 0;
                 }
             }
-            if (audio_id.volume == 0) {
-                document.getElementById("cs_audio_sound").style.color = "#ff8935";
-            } else {
-                document.getElementById("cs_audio_sound").style.color = "#fff";
-            }
             break;
         case 32:
             event.preventDefault();
@@ -117,7 +95,6 @@ document.onkeydown = function(event) {
 
 audio_id.addEventListener('progress', function() {
     var totaltime = audio_id.duration;
-    var ranges = [];
     for (var i = 0; i < audio_id.buffered.length; i++) {
         var buffTimeend = audio_id.buffered.end(i);
         var buffpercentage = (buffTimeend / totaltime) * 100;
@@ -127,8 +104,8 @@ audio_id.addEventListener('progress', function() {
 
 document.getElementsByClassName("cs_audio_bar")[0].addEventListener("click", function(event) {
     var vCurrentBarWidth = event.clientX - document.getElementsByClassName("cs_audio_bar")[0].offsetLeft;
-    document.getElementsByClassName("cs_audio_bar_now")[0].style.width = vCurrentBarWidth + "px";
-    audio_id.currentTime = ((vCurrentBarWidth / document.getElementsByClassName("cs_audio_bar")[0].offsetWidth) * 100 / 100) * audio_id.duration;
+    var percentage = vCurrentBarWidth / document.getElementsByClassName("cs_audio_bar")[0].offsetWidth;
+    audio_id.currentTime = percentage * audio_id.duration;
 });
 
 if (audio_id.paused) {
@@ -145,66 +122,57 @@ audio_id.onvolumechange = function(event) {
 
 document.getElementsByClassName("cs_volBar")[0].addEventListener("click", function(event) {
     var current_vol_width = event.clientX - document.getElementsByClassName("cs_volBar")[0].getBoundingClientRect().left;
-    document.getElementsByClassName("cs_volume")[0].style.width = current_vol_width + "px";
     var calculated_vol = current_vol_width / 65;
     audio_id.volume = calculated_vol;
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Kiểm tra nếu có bài hát được lưu trong local storage thì thiết lập lại
+    var selectedSong = JSON.parse(localStorage.getItem('selectedSong'));
+    if (selectedSong) {
+        cspd_change_music(selectedSong.filePath);
+        updateSongTitle(selectedSong.title);
+    }
+});
+
 function cspd_change_music(music) {
-    audio_id.pause();
-        audio_id.setAttribute('src', music);
-        audio_id.load();
-        audio_id.play();
-        try {
-            var measuredTime = new Date(null);
-            measuredTime.setSeconds(audio_id.duration); // specify value of SECONDS
-            var MHSTime = measuredTime.toISOString().substr(11, 8);
-            var a = MHSTime.split(':'); // split it at the colons
-            var minutes = (+a[0]) * 60 + (+a[1]);
-            document.getElementById("cs_audio_duration").innerHTML = minutes + ":" + ((+a[2]) % 60);
-        } catch (err) {
-            audio_id.addEventListener('loadedmetadata', function() {
-                var measuredTime = new Date(null);
-                measuredTime.setSeconds(audio_id.duration); // specify value of SECONDS
-                var MHSTime = measuredTime.toISOString().substr(11, 8);
-                var a = MHSTime.split(':'); // split it at the colons
-                var minutes = (+a[0]) * 60 + (+a[1]);
-                document.getElementById("cs_audio_duration").innerHTML = minutes + ":" + ((+a[2]) % 60);
-            });
-        }
+    audio_id.pause();  // Dừng bài hát hiện tại
+    audio_id.setAttribute('src', music); // Thiết lập nguồn audio mới
+    audio_id.load(); // Load lại nguồn audio mới
+    audio_id.addEventListener('loadedmetadata', function() {
+        updateDuration(); // Cập nhật thời lượng cho bài hát mới
+        audio_id.play(); // Sau khi load xong, chạy bài hát mới
+    });
 }
-document.addEventListener("DOMContentLoaded", function () {
-        const showNavbar = (toggleId, navId, bodyId, headerId) => {
-            const toggle = document.getElementById(toggleId),
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const showNavbar = (toggleId, navId, bodyId, headerId) => {
+        const toggle = document.getElementById(toggleId),
             nav = document.getElementById(navId),
             bodypd = document.getElementById(bodyId),
             headerpd = document.getElementById(headerId);
 
-            // Validate that all variables exist
-            if(toggle && nav && bodypd && headerpd){
-                toggle.addEventListener('click', () => {
-                    // show navbar
-                    nav.classList.toggle('show');
-                    // change icon
-                    toggle.classList.toggle('bx-x');
-                    // add padding to body
-                    bodypd.classList.toggle('body-pd');
-                    // add padding to header
-                    headerpd.classList.toggle('body-pd');
-                });
-            }
+        if(toggle && nav && bodypd && headerpd) {
+            toggle.addEventListener('click', () => {
+                nav.classList.toggle('show');
+                toggle.classList.toggle('bx-x');
+                bodypd.classList.toggle('body-pd');
+                headerpd.classList.toggle('body-pd');
+            });
         }
-        showNavbar('header-toggle','nav-bar','body-pd','header');
-        /*===== LINK ACTIVE =====*/
-        const linkColor = document.querySelectorAll('.nav_link');
-        function colorLink(){
-            if(linkColor){
-                linkColor.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            }
+    }
+    showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
+
+    const linkColor = document.querySelectorAll('.nav_link');
+    function colorLink() {
+        if(linkColor) {
+            linkColor.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
         }
-        linkColor.forEach(l => l.addEventListener('click', colorLink));
-    var audio_id = document.getElementById("cs_audio");
+    }
+    linkColor.forEach(l => l.addEventListener('click', colorLink));
+
     var handle = document.getElementById("cs_audio_duration_handle");
     var bar = document.getElementsByClassName("cs_audio_bar")[0];
     var isDragging = false;
@@ -238,13 +206,15 @@ document.addEventListener("DOMContentLoaded", function () {
         var percentage = (audio_currentTime / totalDuration) * 100;
 
         document.getElementsByClassName("cs_audio_bar_now")[0].style.width = percentage + "%";
-        handle.style.left = `calc(${percentage}% - 4px)`;
+        document.getElementById("cs_audio_duration_handle").style.left = `calc(${percentage}% - 4px)`;
     }
 
-    audio_id.addEventListener("timeupdate", updateProgressBar);
+    audio_id.addEventListener('timeupdate', function() {
+        var currentTime = audio_id.currentTime;
+        document.getElementsByClassName('cs_audio_current_time')[0].textContent = formatTime(currentTime);
+    });
     audio_id.addEventListener("loadedmetadata", updateProgressBar);
     audio_id.addEventListener("progress", function () {
-        var ranges = [];
         var totaltime = audio_id.duration;
         for (var i = 0; i < audio_id.buffered.length; i++) {
             var buffTimeend = audio_id.buffered.end(i);
@@ -315,12 +285,13 @@ document.addEventListener("DOMContentLoaded", function () {
         audio_id.volume = calculated_vol;
     });
 });
+
 function updateSongTitle(link) {
-    var url = link.getAttribute('onclick').match(/'([^']+)'/)[1]; // Lấy URL từ thuộc tính onclick
-    var songName = url.substring(7, url.length - 4); // Lấy đoạn từ ký tự thứ 8 đến 4 ký tự cuối
-    document.getElementById('cs_song_title').textContent = songName; // Cập nhật nội dung tên bài hát
+    var url = link.getAttribute('onclick').match(/'([^']+)'/)[1];
+    var songName = url.substring(7, url.length - 4);
+    document.getElementById('cs_song_title').textContent = songName;
 }
-var audio_id = document.getElementById("cs_audio");
+
 var volume_handle = document.getElementById("cs_volume_handle");
 var volume_bar = document.getElementsByClassName("cs_volBar")[0];
 var isDraggingVolume = false;
@@ -364,3 +335,108 @@ volume_bar.addEventListener("click", function(event) {
     audio_id.volume = percentage;
     updateVolumeBar();
 });
+document.addEventListener("DOMContentLoaded", function(event) {
+        const navBar = document.getElementById('nav-bar');
+        navBar.addEventListener('mouseenter', () => {
+            navBar.classList.add('expanded');
+        });
+        navBar.addEventListener('mouseleave', () => {
+            navBar.classList.remove('expanded');
+        });
+    });
+function reinitializeAudioControls() {
+    var audio_id = document.getElementById("cs_audio");
+    var playButton = document.getElementById("cs_audio_play");
+    var pauseButton = document.getElementById("cs_audio_pause");
+
+    // Play/Pause functionality
+    playButton.addEventListener("click", function() {
+        audio_id.play();
+    });
+
+    pauseButton.addEventListener("click", function() {
+        audio_id.pause();
+    });
+
+    audio_id.ontimeupdate = function() {
+        var playingPercentage = (audio_id.currentTime / audio_id.duration) * 100;
+        document.getElementsByClassName("cs_audio_bar_now")[0].style.width = playingPercentage + "%";
+
+        if (audio_id.paused) {
+            playButton.style.display = "inline-block";
+            pauseButton.style.display = "none";
+        } else {
+            pauseButton.style.display = "inline-block";
+            playButton.style.display = "none";
+        }
+    };
+
+    // Audio bar click to change current time
+    document.getElementsByClassName("cs_audio_bar")[0].addEventListener("click", function(event) {
+        var barRect = this.getBoundingClientRect();
+        var offsetX = event.clientX - barRect.left;
+        var percentage = offsetX / this.offsetWidth;
+        audio_id.currentTime = percentage * audio_id.duration;
+    });
+
+    // Volume bar click to change volume
+    document.getElementsByClassName("cs_volBar")[0].addEventListener("click", function(event) {
+        var barRect = this.getBoundingClientRect();
+        var offsetX = event.clientX - barRect.left;
+        var percentage = offsetX / this.offsetWidth;
+        audio_id.volume = percentage;
+    });
+
+    // Update current time display
+    audio_id.addEventListener('timeupdate', function() {
+        var audio_currentTime = audio_id.currentTime;
+        var minutes = Math.floor(audio_currentTime / 60);
+        var seconds = Math.floor(audio_currentTime % 60).toString().padStart(2, '0');
+        document.getElementById("cs_audio_current_time").innerHTML = minutes + ":" + seconds;
+    });
+}
+function loadPage(url, addToHistory = true) {
+    $.ajax({
+        url: url,
+        success: function (data) {
+            $('#content').html(data); // Chỉ cập nhật nội dung trong phần tử #content
+            if (addToHistory) {
+                history.pushState(null, null, url);
+            }
+            reinitializeAudioControls(); // Reinitialize audio controls nếu cần
+        }
+    });
+}
+const audio = document.getElementById('cs_audio'); // Đối tượng âm thanh của bạn
+const volumeHandle = document.querySelector('.cs_volume_handle');
+const volumeBar = document.querySelector('.cs_volume');
+
+// Lưu trạng thái của âm lượng vào localStorage
+function saveVolumeState() {
+    localStorage.setItem('cs_audioplayer_volume', audio.volume);
+}
+
+// Khôi phục trạng thái của âm lượng từ localStorage
+function restoreVolumeState() {
+    let savedVolume = localStorage.getItem('cs_audioplayer_volume');
+    if (savedVolume !== null) {
+        audio.volume = parseFloat(savedVolume);
+        updateVolumeUI(audio.volume);
+    }
+}
+
+// Xử lý sự kiện khi thay đổi âm lượng
+audio.addEventListener('volumechange', function() {
+    saveVolumeState();
+    updateVolumeUI(audio.volume);
+});
+
+// Khôi phục trạng thái âm lượng khi trang được tải lại
+document.addEventListener('DOMContentLoaded', function() {
+    restoreVolumeState();
+});
+function updateVolumeUI(volume) {
+    const volumePercentage = volume * 100;
+    volumeBar.style.width = `${volumePercentage}%`;
+    volumeHandle.style.left = `${volumePercentage}%`;
+}

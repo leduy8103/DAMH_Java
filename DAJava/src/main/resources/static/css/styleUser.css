@@ -83,23 +83,7 @@ body {
     position: absolute;
 }
 
-.cs_audio_duration_handle,
-.cs_volume_handle {
-    width: 12px;
-    height: 12px;
-    background-color: #1db954;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0; /* Cố định handle về vị trí bên trái */
-}
 
-.cs_volume_handle {
-    top: 50%; /* Center the handle vertically */
-    transform: translateY(-50%);
-}
 
 #cs_audio_sound {
     display: flex;
@@ -224,6 +208,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     left: 0; /* Cố định handle về vị trí bên trái */
+    cursor: pointer;
 }
 
 .cs_volume_handle {
@@ -281,9 +266,6 @@ body {
     white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
     text-overflow: ellipsis; /* Hiển thị dấu chấm ba (...) khi nội dung quá dài */
 }
-
-
-
 
 a {
     text-decoration: none;
