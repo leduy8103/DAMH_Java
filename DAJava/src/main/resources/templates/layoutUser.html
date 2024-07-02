@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
@@ -15,6 +14,9 @@
     <link href="/css/styleUser.css" rel="stylesheet">
 </head>
 <body id="body-pd">
+<audio id="cs_audio" controls>
+    <source src="" type="audio/mpeg">
+</audio>
 <header class="header d-flex align-items-center justify-content-between" id="header">
     <form action="/home/search" method="get">
         <div class="search-bar">
@@ -32,15 +34,7 @@
                 <span class="nav_logo-name">BBBootstrap</span>
             </a>
             <div class="nav_list">
-<!--                    <span class="nav_link active" data-url="/home/trang1">-->
-<!--                        <i class='bx bx-grid-alt nav_icon'></i>-->
-<!--                        <span class="nav_name">Dashboard</span>-->
-<!--                    </span>-->
-<!--                <span class="nav_link" data-url="/home/trang2">-->
-<!--                        <i class='bx bx-user nav_icon'></i>-->
-<!--                        <span class="nav_name">Users</span>-->
-<!--                    </span>-->
-                <a class="nav_link active" data-url="/home/trang1">
+                <a class="nav_link" data-url="/home/trang1">
                     <i class='bx bx-grid-alt nav_icon'></i>
                     <span class="nav_name">Dashboard</span>
                 </a>
@@ -48,9 +42,9 @@
                     <i class='bx bx-user nav_icon'></i>
                     <span class="nav_name">Ca sĩ</span>
                 </a>
-                <a href="#" class="nav_link">
+                <a class="nav_link" data-url="/home/albumList">
                     <i class='bx bx-message-square-detail nav_icon'></i>
-                    <span class="nav_name">Thể loại</span>
+                    <span class="nav_name">Danh sách Album</span>
                 </a>
                 <a href="#" class="nav_link">
                     <div>
@@ -61,6 +55,7 @@
                         <i class='bx bx-plus-circle nav_icon' id="add-playlist-btn"></i>
                     </div>
                 </a>
+
                 <div class="playlist-dropdown">
                     <ul id="playlist-list" style="display: none;">
                         <!-- Thymeleaf iteration over playlists -->
@@ -119,9 +114,6 @@
     <input type="hidden" name="playlistId" id="playlistId">
     <input type="hidden" name="songId" id="songId">
 </form>
-<audio id="cs_audio" controls>
-    <source src="" type="audio/mpeg">
-</audio>
 <section class="content" id="content">
     <section layout:fragment="content">
         <!-- Content will be injected here -->
@@ -160,6 +152,33 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    $('.nav_link').click(function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+        $('.nav_link').removeClass('active');
+        $(this).addClass('active');
+        var url = $(this).data('url');
+        loadPage(url);
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        const navBar = document.getElementById('nav-bar');
+        navBar.addEventListener('mouseenter', () => {
+            navBar.classList.add('expanded');
+        });
+        navBar.addEventListener('mouseleave', () => {
+            navBar.classList.remove('expanded');
+        });
+
+        const addPlaylistBtn = document.getElementById('add-playlist-btn');
+        const addPlaylistForm = document.getElementById('add-playlist-form');
+
+        addPlaylistBtn.addEventListener('click', () => {
+            addPlaylistForm.style.display = addPlaylistForm.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+</script>
+<script>
     $(document).ready(function() {
         $("#search").autocomplete({
             source: function(request, response) {
@@ -178,14 +197,6 @@
             },
             minLength: 2
         });
-    });
-
-    $('.nav_link').click(function (event) {
-        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
-        $('.nav_link').removeClass('active');
-        $(this).addClass('active');
-        var url = $(this).data('url');
-        loadPage(url);
     });
 </script>
 <script>
@@ -245,8 +256,5 @@
         });
     });
 </script>
-
-
-
 </body>
 </html>

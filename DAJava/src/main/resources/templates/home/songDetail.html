@@ -27,7 +27,7 @@
 <section layout:fragment="content">
     <div class="container">
         <div class="song-detail">
-            <img th:src="@{'/images/' + ${song.imagePath}}" alt="Album Art">
+            <img th:src="@{${song.imagePath}}" alt="Album Art">
             <div class="song-info">
                 <p>Bài hát</p>
                 <h1 th:text="${song.title}">Name</h1>

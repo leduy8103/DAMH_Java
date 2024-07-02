@@ -4,7 +4,7 @@
     --header-height: 3rem;
     --nav-width: 68px;
     --nav-width-expanded: 250px; /* Thêm biến này để chiều rộng khi mở rộng */
-    --first-color: #333333;
+    --first-color: #4723D9;
     --first-color-light: #AFA5D9;
     --white-color: #F7F6FB;
     --body-font: 'Nunito', sans-serif;
@@ -378,7 +378,7 @@ a {
 }
 
 .nav_logo, .nav_link {
-    display: flex;
+    display: grid;
     grid-template-columns: max-content max-content;
     align-items: center;
     column-gap: 1rem;
@@ -399,14 +399,14 @@ a {
     margin-left: auto;
 }
 
-#add-playlist-btn {
-    cursor: pointer;
-}
-
 .nav_logo-name {
     color: var(--white-color);
     font-weight: 700;
     display: none;
+}
+
+#add-playlist-btn {
+    cursor: pointer;
 }
 
 .nav_link {
@@ -490,7 +490,6 @@ a {
         padding-left: calc(var(--nav-width) + 188px);
     }
 }
-
 .modal {
             display: none;
             position: fixed;
@@ -572,4 +571,3 @@ a {
 #playlist-list.active {
     display: block;
 }
-

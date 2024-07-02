@@ -136,6 +136,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function cspd_change_music(music) {
+    if (!music) {
+        return;  // If there's no music provided, do nothing
+    }
     audio_id.pause();  // Dừng bài hát hiện tại
     audio_id.setAttribute('src', music); // Thiết lập nguồn audio mới
     audio_id.load(); // Load lại nguồn audio mới
@@ -342,6 +345,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
         navBar.addEventListener('mouseleave', () => {
             navBar.classList.remove('expanded');
+        });
+        const addPlaylistBtn = document.getElementById('add-playlist-btn');
+        const addPlaylistForm = document.getElementById('add-playlist-form');
+
+        addPlaylistBtn.addEventListener('click', () => {
+            addPlaylistForm.style.display = addPlaylistForm.style.display === 'none' ? 'block' : 'none';
         });
     });
 function reinitializeAudioControls() {
