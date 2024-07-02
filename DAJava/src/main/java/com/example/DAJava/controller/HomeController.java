@@ -1,28 +1,12 @@
 package com.example.DAJava.controller;
 
-import com.example.DAJava.model.Albums;
-import com.example.DAJava.model.Comments;
-import com.example.DAJava.model.Ratings;
-import com.example.DAJava.model.Songs;
-import com.example.DAJava.service.AlbumsService;
-import com.example.DAJava.service.CommentsService;
-import com.example.DAJava.service.RatingsService;
-import com.example.DAJava.service.SongsService;
-import com.example.DAJava.model.Playlists;
-import com.example.DAJava.model.Users;
+import com.example.DAJava.model.*;
 import com.example.DAJava.service.*;
-import com.example.DAJava.model.Songs;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,26 +15,29 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/home")
 public class HomeController {
-
     @Autowired
     private SongsService songsService;
-
     @Autowired
     private AlbumsService albumsService;
     @Autowired
     private PlaylistsService playlistsService;
     @Autowired
     private UserService userService;
-    @GetMapping
-    public String index(Model model, Principal principal) {
-        return "home/index";
-    }
+    @Autowired
+    private CommentsService commentService;
+    @Autowired
+    private RatingsService ratingService;
 
-//    @Autowired
-//    private CommentsService commentService;
-//
-//    @Autowired
-//    private RatingsService ratingService;
+    @GetMapping("/trang1")
+    public String Index(Model model) {
+        model.addAttribute("songs", songsService.getAllSongs());
+        return "/home/index";
+    }
+    @GetMapping("/trang2")
+    public String Home(Model model) {
+        model.addAttribute("songs", songsService.getAllSongs());
+        return "/home/home1";
+    }
 
     @GetMapping("/albumList")
     public String albumList(Model model, Principal principal) {
@@ -63,7 +50,7 @@ public class HomeController {
 
     @GetMapping("/search")
     public String searchSongs(@RequestParam String keyword, Model model, Principal principal) {
-        List<Songs> results = songService.searchSongsByName(keyword);
+        List<Songs> results = songsService.searchSongsByName(keyword);
         model.addAttribute("searchResults", results);
         List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
         model.addAttribute("playlists", playlists);
@@ -110,15 +97,6 @@ public class HomeController {
         }
     }
 
-    @Autowired
-    private SongsService songService;
-
-    @Autowired
-    private CommentsService commentService;
-
-    @Autowired
-    private RatingsService ratingService;
-
     @PostMapping("/rate")
     public String rateSong(@RequestParam Long songId, @RequestParam int ratingValue, Principal principal) {
         ratingService.rateSong(songId, ratingValue, principal.getName());
@@ -136,8 +114,6 @@ public class HomeController {
         commentService.deleteComment(commentId, principal.getName());
         return "redirect:/home/songs/" + commentId; // Đảm bảo URL chuyển hướng đúng
     }
-
-    //Playlist
 
     @GetMapping("/playlist/{playlistId}")
     public String getPlaylistById(@PathVariable("playlistId") Long playlistId, Model model, Principal principal) {
@@ -180,6 +156,4 @@ public class HomeController {
         playlistsService.removeSongFromPlaylist(playlistId, songId);
         return "redirect:/home/playlist/" + playlistId;
     }
-
-
 }

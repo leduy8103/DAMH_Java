@@ -15,11 +15,13 @@
         <div class="row">
             <div class="col-md-3" th:each="album : ${albums}">
                 <div class="card mb-4 shadow-sm">
-                    <img class="card-img-top" th:src="@{'/images/' + ${album.imagePath}}" alt="Album Image">
+                    <img class="card-img-top" th:src="@{${album.imagePath}}" alt="Album Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${album.title}"></h5>
                         <p class="card-text" th:text="${album.artist.artistName}"></p>
-                        <a th:href="@{/home/albums/{id}(id=${album.albumId})}" class="btn btn-primary">View Details</a>
+                        <button type="button" class="btn btn-dark btn-lg nav_link" style="color: white;" th:data-url="@{/home/albums/{id}(id=${album.albumId})}">
+                            View Details
+                        </button>
                     </div>
                 </div>
             </div>

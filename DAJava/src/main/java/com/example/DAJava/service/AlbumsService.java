@@ -14,7 +14,7 @@ import java.util.Optional;
 @Transactional
 public class AlbumsService {
 
-    private AlbumsRepository albumsRepository;
+    private final AlbumsRepository albumsRepository;
 
     @Autowired
     public AlbumsService(AlbumsRepository albumsRepository) {

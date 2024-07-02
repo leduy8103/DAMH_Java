@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,9 @@
     <link href="/css/styleUser.css" rel="stylesheet">
 </head>
 <body id="body-pd">
+<audio id="cs_audio" controls>
+    <source src="" type="audio/mpeg">
+</audio>
 <header class="header d-flex align-items-center justify-content-between" id="header">
     <form action="/home/search" method="get">
         <div class="search-bar">
@@ -30,17 +34,17 @@
                 <span class="nav_logo-name">BBBootstrap</span>
             </a>
             <div class="nav_list">
-                <a href="#" class="nav_link active">
+                <a class="nav_link" data-url="/home/trang1">
                     <i class='bx bx-grid-alt nav_icon'></i>
                     <span class="nav_name">Dashboard</span>
                 </a>
-                <a href="#" class="nav_link">
+                <a class="nav_link" data-url="/home/trang2">
                     <i class='bx bx-user nav_icon'></i>
                     <span class="nav_name">Ca sĩ</span>
                 </a>
-                <a href="#" class="nav_link">
+                <a class="nav_link" data-url="/home/albumList">
                     <i class='bx bx-message-square-detail nav_icon'></i>
-                    <span class="nav_name">Thể loại</span>
+                    <span class="nav_name">Danh sách Album</span>
                 </a>
                 <a href="#" class="nav_link">
                     <div>
@@ -51,6 +55,7 @@
                         <i class='bx bx-plus-circle nav_icon' id="add-playlist-btn"></i>
                     </div>
                 </a>
+
                 <div class="playlist-dropdown">
                     <ul id="playlist-list" style="display: none;">
                         <!-- Thymeleaf iteration over playlists -->
@@ -92,7 +97,6 @@
         </a>
     </nav>
 </div>
-<!-- Modal for Playlists -->
 <div id="playlistModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -110,23 +114,19 @@
     <input type="hidden" name="playlistId" id="playlistId">
     <input type="hidden" name="songId" id="songId">
 </form>
-<!--Container Main start-->
-<div class="height-100 bg-light" style="margin-bottom:52px" layout:fragment="content">
-
-</div>
-<!--Container Main end-->
-<!--<audio id="cs_audio" controls>-->
-<!--    <source src="/audio/CoolKid - Sau Cơn Mưa (ft. Rhyder).mp3" type="audio/mpeg">-->
-<!--</audio>-->
+<section class="content" id="content">
+    <section layout:fragment="content">
+        <!-- Content will be injected here -->
+    </section>
+</section>
 <div class="cs_audioplayer-container">
     <div id="cs_audioplayer">
-        <span class="cs_audio_time">
+            <span class="cs_audio_time">
                 <span id="cs_audio_current_time">0:00</span>
             </span>
-
         <span id="cs_play_pause_btn" class="cs_play_pause_btn">
-                <i class="bi bi-play-fill" id="cs_audio_play"></i>
-                <i class="bi bi-pause-fill" id="cs_audio_pause"></i>
+                <i class="far fa-play-circle" id="cs_audio_play"></i>
+                <i class="far fa-pause-circle" id="cs_audio_pause"></i>
             </span>
 
         <span id="cs_audio_sound" class="cs_audio_sound">
@@ -151,6 +151,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('.nav_link').click(function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+        $('.nav_link').removeClass('active');
+        $(this).addClass('active');
+        var url = $(this).data('url');
+        loadPage(url);
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
         const navBar = document.getElementById('nav-bar');
@@ -247,8 +256,5 @@
         });
     });
 </script>
-
-
-
 </body>
 </html>
