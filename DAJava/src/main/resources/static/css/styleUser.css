@@ -359,7 +359,7 @@ a {
     left: 0;
     width: var(--nav-width);
     height: 100vh;
-    background-color: var(--first-color);
+    background-color: #333333;
     padding: .5rem 1rem 0 0;
     transition: .5s;
     z-index: var(--z-fixed);

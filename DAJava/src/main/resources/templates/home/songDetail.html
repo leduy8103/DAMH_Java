@@ -45,8 +45,9 @@
                 </div>
 
                 <div class="controls">
-                    <button><img src="/images/play-icon.png"></button>
-                    <button><img src="/images/add-icon.png"></button>
+                    <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" class="play-button">
+                        <i class="fas fa-play"></i>
+                    </button>
                 </div>
             </div>
         </div>

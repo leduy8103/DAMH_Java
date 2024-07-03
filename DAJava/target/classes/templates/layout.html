@@ -14,12 +14,10 @@
         <nav>
             <ul>
                 <li><a th:href="@{/admin/home}">Trang chủ</a></li>
-                <li><span>THƯ VIỆN</span></li>
-                <li><a href="#">Vừa nghe</a></li>
+                <li><a th:href="@{/admin/genres}">Thể loại</a></li>
                 <li><a th:href="@{/admin/songlist}">Bài hát</a></li>
                 <li><a th:href="@{/admin/albumlist}">Album</a></li>
                 <li><a th:href="@{/admin/artists}">Nghệ sĩ</a></li>
-                <li><span>DANH SÁCH PHÁT</span></li>
             </ul>
         </nav>
     </aside>
@@ -30,8 +28,7 @@
                 <button>🔍</button>
             </div>
             <div class="user-profile">
-                <img src="user-avatar.png" alt="Ảnh đại diện">
-                <span class="user-name">Lê Duy</span>
+                <img src="/images/login-bg.png" alt="Ảnh đại diện">
             </div>
         </header>
         <section class="content">

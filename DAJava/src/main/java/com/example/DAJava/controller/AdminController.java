@@ -175,7 +175,7 @@ public class AdminController {
         // Lưu file âm thanh mới hoặc giữ nguyên file cũ
         if (audioFile != null && !audioFile.isEmpty()) {
             String audioFileName = StringUtils.cleanPath(Objects.requireNonNull(audioFile.getOriginalFilename()));
-            song.setFilePath("/audio/songAudio/" + audioFileName);
+            song.setFilePath("/audio/" + audioFileName);
         } else {
             // Giữ nguyên file cũ nếu không có file mới được chọn
             Songs existingSong = songService.getSongsById(id)

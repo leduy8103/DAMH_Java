@@ -28,6 +28,26 @@ public class HomeController {
     @Autowired
     private RatingsService ratingService;
 
+    @Autowired
+    private HomeService homeService;
+
+    @GetMapping
+    public String index(Model model, Principal principal) {
+        // Lấy ngẫu nhiên 4 bài hát, albums và artists
+        List<Songs> randomSongs = homeService.getRandomSongs(4);
+        List<Albums> randomAlbums = homeService.getRandomAlbums(4);
+        List<Artists> randomArtists = homeService.getRandomArtists(4);
+        List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
+
+        // Đưa dữ liệu vào model để truyền cho template Thymeleaf
+        model.addAttribute("randomSongs", randomSongs);
+        model.addAttribute("randomAlbums", randomAlbums);
+        model.addAttribute("randomArtists", randomArtists);
+        model.addAttribute("playlists", playlists);
+
+        return "/home/index"; // Thay thế "index" bằng tên template Thymeleaf của bạn
+    }
+
     @GetMapping("/trang1")
     public String Index(Model model) {
         model.addAttribute("songs", songsService.getAllSongs());
