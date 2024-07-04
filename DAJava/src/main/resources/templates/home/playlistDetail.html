@@ -25,7 +25,6 @@
                         <th>sSong order</th>
                         <th></th>
                         <th>Title</th>
-                        <th>Duration</th>
                         <th>Release Date</th>
                         <th></th>
                     </tr>
@@ -34,7 +33,10 @@
                     <tr th:each="song, iterStat : ${songs}">
                         <td th:text="${iterStat.count}" style="justify-content:center"></td>
                         <td>
-                            <button class="btn btn-sm">
+<!--                            <button class="btn btn-sm">-->
+<!--                                <i class="fas fa-play"></i>-->
+<!--                            </button>-->
+                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" class="btn btn-sm">
                                 <i class="fas fa-play"></i>
                             </button>
                         </td>
@@ -42,10 +44,10 @@
                             <img th:src="@{${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
                             <a th:href="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}"></a>
                         </td>
-                        <td th:text="${song.duration}"></td>
+<!--                        <td th:text="${song.duration}"></td>-->
                         <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>
                         <td>
-                            <a th:href="@{'/home/removeFromPlaylist?playlistId=' + ${playlist.playlistId} + '&songId=' + ${song.songId}}"
+                            <a th:href="@{'/home/playlist/removeFromPlaylist?playlistId=' + ${playlist.playlistId} + '&songId=' + ${song.songId}}"
                                class="btn btn-sm btn-remove-song"
                                onclick="return confirm('Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?');">
                                 <i class="fas fa-trash"></i> Xóa

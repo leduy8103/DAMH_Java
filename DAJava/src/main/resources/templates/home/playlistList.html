@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutUser}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Grid</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .category {
+           display: flex;
+           gap: 10px;
+           margin: 20px 0;
+       }
+       .category button {
+           background-color: #333;
+           border: none;
+           padding: 10px 20px;
+           color: white;
+           font-size: 14px;
+           cursor: pointer;
+           border-radius: 20px;
+       }
+       .category button.active {
+           background-color: #1db954;
+       }
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        .playlist-item {
+            position: relative;
+            background-color: #181818;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-radius: 4px;
+            background-color: #282828;
+            display: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .playlist-item:hover .delete-btn {
+            background-color: #282828;
+            display: block;
+        }
+        .playlist-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .delete-btn i {
+            width: 20px;
+            height: 20px;
+        }
+        .playlist-info {
+            margin-top: 10px;
+        }
+        .playlist-info h4 {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="category">
+            <a href="/home">
+                <button>Home</button>
+            </a>
+            <a href="/home/playlistList">
+                <button class="active">Playlist</button>
+            </a>
+        </div>
+        <div style="width: 250px;">
+            <form id="add-playlist-form" action="/home/playlist/addPlaylist" method="get">
+                <div class="input-group mb-3">
+                    <input type="text" id="playlist-name" class="form-control" name="playlistName" placeholder="Tên playlist mới" required>
+                    <button class="btn btn-success" type="submit" id="save-playlist-btn">Lưu</button>
+                </div>
+            </form>
+        </div>
+        <h2>My Playlists</h2>
+        <div class="playlist-grid">
+            <div th:each="playlist : ${myPlaylists}" class="playlist-item">
+                <a th:href="@{/home/playlist/{playlistId}(playlistId=${playlist.playlistId})}">
+                    <img th:src="@{https://cdn-icons-png.flaticon.com/512/10054/10054534.png}" alt="Playlist Image">
+                    <div class="playlist-info">
+                        <h4 th:text="${playlist.name}"></h4>
+                    </div>
+                </a>
+                <a th:href="@{/home/playlist/deletePlaylist/{playlistId}(playlistId=${playlist.playlistId})}">
+                    <button class="delete-btn" th:data-id="${playlist.playlistId}">
+                        <i class='bx bxs-trash'></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <h2>Other Playlists</h2>
+        <div class="playlist-grid">
+            <div th:each="playlist : ${otherPlaylists}" class="playlist-item">
+                <a th:href="@{/home/playlist/{playlistId}(playlistId=${playlist.playlistId})}">
+                    <img th:src="@{https://cdn-icons-png.flaticon.com/512/10054/10054534.png}" alt="Playlist Image">
+                    <div class="playlist-info">
+                        <h4 th:text="${playlist.name}"></h4>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>

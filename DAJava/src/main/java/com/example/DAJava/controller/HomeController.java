@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/home")
@@ -30,46 +31,38 @@ public class HomeController {
 
     @Autowired
     private HomeService homeService;
+    @Autowired
+    private ArtistsService artistsService; // Thêm ArtistsService
 
     @GetMapping
-    public String index(Model model, Principal principal) {
+    public String index(Model model) {
         // Lấy ngẫu nhiên 4 bài hát, albums và artists
         List<Songs> randomSongs = homeService.getRandomSongs(4);
         List<Albums> randomAlbums = homeService.getRandomAlbums(4);
         List<Artists> randomArtists = homeService.getRandomArtists(4);
-        List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
 
         // Đưa dữ liệu vào model để truyền cho template Thymeleaf
         model.addAttribute("randomSongs", randomSongs);
         model.addAttribute("randomAlbums", randomAlbums);
         model.addAttribute("randomArtists", randomArtists);
-        model.addAttribute("playlists", playlists);
 
         return "/home/index"; // Thay thế "index" bằng tên template Thymeleaf của bạn
     }
-
-    @GetMapping("/trang1")
-    public String Index(Model model) {
-        model.addAttribute("songs", songsService.getAllSongs());
-        return "/home/index";
+    @GetMapping("/artistList")
+    public String artistList(Model model) {
+        List<Artists> artists = artistsService.getAllArtists();
+        model.addAttribute("artists", artists);
+        return "/home/artistList";
     }
-    @GetMapping("/trang2")
-    public String Home(Model model) {
-        model.addAttribute("songs", songsService.getAllSongs());
-        return "/home/home1";
-    }
-
     @GetMapping("/albumList")
-    public String albumList(Model model, Principal principal) {
+    public String albumList(Model model) {
         List<Albums> albums = albumsService.getAllAlbums();
         model.addAttribute("albums", albums);
-        List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
-        model.addAttribute("playlists", playlists);
         return "/home/albumList"; // Đảm bảo trả về "home/index"
     }
 
     @GetMapping("/search")
-    public String searchSongs(@RequestParam String keyword, Model model, Principal principal) {
+    public String searchSongs(@RequestParam String keyword, Model model,Principal principal) {
         List<Songs> results = songsService.searchSongsByName(keyword);
         model.addAttribute("searchResults", results);
         List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
@@ -84,14 +77,12 @@ public class HomeController {
     }
 
     @GetMapping("/albums/{id}")
-    public String getAlbumById(@PathVariable("id") Long id, Model model, Principal principal) {
+    public String getAlbumById(@PathVariable("id") Long id, Model model) {
         Optional<Albums> albumOpt = albumsService.getAlbumById(id);
         if (albumOpt.isPresent()) {
             Albums album = albumOpt.get();
             List<Songs> songs = songsService.findAllSongsByAlbumId(id);
             model.addAttribute("album", album);
-            List<Playlists> playlists = playlistsService.getAllPlaylistByUser(principal.getName());
-            model.addAttribute("playlists", playlists);
             model.addAttribute("songs", songs);
             return "home/albumDetail";
         } else {
@@ -134,7 +125,16 @@ public class HomeController {
         commentService.deleteComment(commentId, principal.getName());
         return "redirect:/home/songs/" + commentId; // Đảm bảo URL chuyển hướng đúng
     }
-
+    // Playlist
+    @GetMapping("/playlistList")
+    public String getAllPlaylist(Model model, Principal principal) {
+        List<Playlists> myPlaylists = playlistsService.getAllPlaylistByUser(principal.getName());
+        model.addAttribute("myPlaylists", myPlaylists);
+        List<Playlists> otherPlaylists = playlistsService.getAllPlaylists().stream().filter(playlist -> !playlist.getUser().getUsername().equals(principal.getName()))
+                .collect(Collectors.toList());
+        model.addAttribute("otherPlaylists",otherPlaylists);
+        return "home/playlistList";
+    }
     @GetMapping("/playlist/{playlistId}")
     public String getPlaylistById(@PathVariable("playlistId") Long playlistId, Model model, Principal principal) {
         Optional<Playlists> playlistOpt = playlistsService.getPlaylistById(playlistId);
@@ -151,27 +151,27 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/addPlaylist")
+    @GetMapping("/playlist/addPlaylist")
     public String addPlaylist(@RequestParam String playlistName, Principal principal) {
         playlistsService.addPlaylist(playlistName, principal.getName());
         return "redirect:/home";
     }
 
-    @GetMapping("/addToPlaylist")
+    @GetMapping("/playlist/addToPlaylist")
     @ResponseBody
     public ResponseEntity<String> addToPlaylist(@RequestParam Long playlistId, @RequestParam Long songId) {
         playlistsService.addSongToPlaylist(playlistId, songId);
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/deletePlaylist/{playlistId}")
+    @GetMapping("/playlist/deletePlaylist/{playlistId}")
     public String deletePlaylist(@PathVariable("playlistId") Long playlistId) {
         playlistsService.deletePlaylistDetailsByPlaylistId(playlistId); // Xoá các playlistDetail liên quan
         playlistsService.deletePlaylist(playlistId); // Xoá playlist
         return "redirect:/home";
     }
 
-    @GetMapping("/removeFromPlaylist")
+    @GetMapping("/playlist/removeFromPlaylist")
     public String removeFromPlaylist(@RequestParam Long playlistId, @RequestParam Long songId) {
         playlistsService.removeSongFromPlaylist(playlistId, songId);
         return "redirect:/home/playlist/" + playlistId;

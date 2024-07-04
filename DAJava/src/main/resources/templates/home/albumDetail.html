@@ -41,11 +41,11 @@
                         </td>
                         <td>
                             <img th:src="@{${song.imagePath}}" alt="Song Image" class="img-thumbnail" style="width: auto; height:40px;">
-                            <button type="button" class="btn btn-dark btn-lg nav_link" style="color: white;"
+                            <a class="nav_load" style="cursor:pointer;"
                                     th:data-url="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}">
-                            </button>
+                            </a>
                         </td>
-                        <td th:text="${song.duration}"></td>
+<!--                        <td th:text="${song.duration}"></td>-->
                         <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>
                     </tr>
                     </tbody>

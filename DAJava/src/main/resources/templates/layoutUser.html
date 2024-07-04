@@ -23,6 +23,7 @@
             <input id="search" name="keyword" type="text" placeholder="Tìm kiếm...">
             <button type="submit">🔍</button>
         </div>
+
     </form>
     <div class="header_img"><img src="/images/login-bg.png" alt=""></div>
 </header>
@@ -34,57 +35,21 @@
                 <span class="nav_logo-name">Home</span>
             </a>
             <div class="nav_list">
-                <a class="nav_link" data-url="/home/trang1">
-                    <i class='bx bx-grid-alt nav_icon'></i>
-                    <span class="nav_name">Dashboard</span>
-                </a>
-                <a class="nav_link" data-url="/home/trang2">
+<!--                <a class="nav_link nav_load" data-url="/home/trang1">-->
+<!--                    <i class='bx bx-grid-alt nav_icon'></i>-->
+<!--                    <span class="nav_name">Dashboard</span>-->
+<!--                </a>-->
+                <a class="nav_link nav_load" data-url="/home/artistList">
                     <i class='bx bx-user nav_icon'></i>
                     <span class="nav_name">Ca sĩ</span>
                 </a>
-                <a class="nav_link" data-url="/home/albumList">
+                <a class="nav_link nav_load" data-url="/home/albumList">
                     <i class='bx bx-message-square-detail nav_icon'></i>
                     <span class="nav_name">Danh sách Album</span>
                 </a>
-                <a href="#" class="nav_link">
-                    <div>
-                        <i class='bx bx-bookmark nav_icon'></i>
-                    </div>
-                    <span class="nav_name" id="playlist-link">Playlist</span>
-                    <div class="nav_icon_plus">
-                        <i class='bx bx-plus-circle nav_icon' id="add-playlist-btn"></i>
-                    </div>
-                </a>
-
-                <div class="playlist-dropdown">
-                    <ul id="playlist-list" style="display: none;">
-                        <!-- Thymeleaf iteration over playlists -->
-                        <li th:each="playlist : ${playlists}">
-                            <div class="playlist-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <a th:href="@{/home/playlist/{playlistId}(playlistId=${playlist.playlistId})}">
-                                        <span th:text="${playlist.name}">Playlist Name</span>
-                                    </a>
-                                </div>
-                                <div>
-                                    <a th:href="@{/home/deletePlaylist/{playlistId}(playlistId=${playlist.playlistId})}">
-                                        <i class='bx bxs-trash'></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <form id="add-playlist-form" action="/home/addPlaylist" method="get" style="display: none; margin: -24px 0 0 20px;">
-                    <div class="input-group mb-3">
-                        <input type="text" id="playlist-name" class="form-control" name="playlistName" placeholder="Tên playlist mới" required>
-                        <button class="btn btn-success" type="submit" id="save-playlist-btn">Lưu</button>
-                    </div>
-                </form>
-
             </div>
         </div>
-        <a href="#" class="nav_link">
+        <a th:href="@{/logout}" class="nav_link">
             <i class='bx bx-log-out nav_icon'></i>
             <span class="nav_name">SignOut</span>
         </a>
@@ -145,9 +110,9 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    $('.nav_link').click(function (event) {
+    $('.nav_load').click(function (event) {
         event.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
-        $('.nav_link').removeClass('active');
+        $('.nav_load').removeClass('active');
         $(this).addClass('active');
         var url = $(this).data('url');
         loadPage(url);
@@ -221,7 +186,7 @@
 
         // AJAX request
         $.ajax({
-            url: '/home/addToPlaylist',
+            url: '/home/playlist/addToPlaylist',
             type: 'GET',
             data: {
                 playlistId: selectedPlaylistId,

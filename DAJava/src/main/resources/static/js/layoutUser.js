@@ -289,10 +289,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-function updateSongTitle(link) {
-    var url = link.getAttribute('onclick').match(/'([^']+)'/)[1];
-    var songName = url.substring(7, url.length - 4);
-    document.getElementById('cs_song_title').textContent = songName;
+function updateSongTitle(songTitle) {
+    document.getElementById('cs_song_title').textContent = songTitle;
 }
 
 var volume_handle = document.getElementById("cs_volume_handle");
