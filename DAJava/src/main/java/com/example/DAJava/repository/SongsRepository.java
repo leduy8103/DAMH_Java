@@ -8,7 +8,13 @@ import java.util.List;
 
 public interface SongsRepository extends JpaRepository<Songs, Long> {
     List<Songs> findByTitleContainingIgnoreCase(String title);
-    List<Songs> findByAlbumAlbumId(Long albumId); // Chỉnh sửa tại đây
+    List<Songs> findByAlbumAlbumId(Long albumId); // Tìm theo AlbumId
+
+    default List<Songs> findByArtistArtistId(Long artistId) // Thêm phương thức tìm theo ArtistId
+    {
+        return null;
+    }
+
     @Query(value = "SELECT * FROM songs ORDER BY RAND() LIMIT ?1", nativeQuery = true)
     List<Songs> findRandomSongs(int limit);
 }

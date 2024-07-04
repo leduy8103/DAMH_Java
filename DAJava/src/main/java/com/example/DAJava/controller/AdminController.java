@@ -18,6 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,8 @@ public class AdminController {
     // Quản lý chủ đề
     @Autowired
     private GenresService genresService;
+    @Autowired
+    private CommentsService commentsService;
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("message", "Chào mừng bạn đến với trang quản lý âm nhạc!");
@@ -323,5 +328,27 @@ public class AdminController {
     public String updateUser(@PathVariable String username, @ModelAttribute Users updatedUser) {
         userService.updateUser(username, updatedUser);
         return "redirect:/admin/users";
+    }
+
+    //statistics
+    @GetMapping("/statistics")
+    public String getStatistics(Model model) {
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate date 7 days ago
+        LocalDate date7DaysAgo = currentDate.minusDays(7);
+
+        // Convert LocalDate to Date for start date (00:00:00)
+        Date startDate = Date.from(date7DaysAgo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Convert LocalDate to LocalDateTime and set time to end of day (23:59:59)
+        LocalDateTime endOfDay = currentDate.atTime(23, 59, 59);
+        Date endDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+
+        // Fetch comments from the last 7 days
+        List<Comments> comments = commentsService.getCommentsSince(startDate, endDate);
+
+        model.addAttribute("comments", comments);
+        return "/admin/statistics/statistics";
     }
 }

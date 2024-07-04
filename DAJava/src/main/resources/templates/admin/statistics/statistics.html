@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h2>Comments Statistics for the Last 7 Days</h2>
+        <canvas id="commentsChart"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const commentsData = /*[[${comments}]]*/ [];
+
+        // Initialize an array to hold counts for each day
+        const commentsCountByDay = new Array(7).fill(0);
+
+        // Function to format dates using Moment.js
+        function formatDate(dateString) {
+            return moment(dateString).format('YYYY-MM-DD');
+        }
+
+        commentsData.forEach(comment => {
+            const commentDate = formatDate(comment.date);
+            const daysAgo = moment().diff(commentDate, 'days');
+
+            // Adjust for today and future dates
+            if (daysAgo >= 0 && daysAgo < 7) {
+                commentsCountByDay[daysAgo]++;
+            }
+        });
+
+        // Generate days of week in reverse order
+        const daysOfWeek = [];
+        for (let i = 6; i >= 0; i--) {
+            if (i === 0) {
+                daysOfWeek.push("Today");
+            } else {
+                daysOfWeek.push(moment().subtract(i, 'days').format('YYYY-MM-DD'));
+            }
+        }
+
+        const commentsCounts = commentsCountByDay.reverse();
+
+        const ctxComments = document.getElementById('commentsChart').getContext('2d');
+        const commentsChart = new Chart(ctxComments, {
+            type: 'bar',
+            data: {
+                labels: daysOfWeek,
+                datasets: [{
+                    label: 'Comments',
+                    data: commentsCounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+
+</section>
+</body>
+</html>

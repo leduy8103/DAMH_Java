@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="controls">
-                    <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" class="play-button">
+                    <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(\'' + ${song.title} + '\');'" class="play-button">
                         <i class="fas fa-play"></i>
                     </button>
                 </div>

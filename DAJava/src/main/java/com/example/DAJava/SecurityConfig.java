@@ -46,6 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/home","/home/**","/css/**", "/js/**", "/", "/oauth/**", "/register", "/error", "/images/**", "/cart", "/cart/**", "/login", "/audio/**")
                         .permitAll()
+                        .requestMatchers("/admin/statistics")
+                        .permitAll()
                         .requestMatchers("/home/playlist/**","/home/rate","/home/comment","/home/comment/delete")
                         .hasAuthority("USER")
                         .requestMatchers("/admin/**")

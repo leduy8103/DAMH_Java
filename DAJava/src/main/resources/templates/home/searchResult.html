@@ -118,21 +118,21 @@
                 </div>
             </div>
             <div class="songs">
-<!--                <div th:each="song, songStat : ${searchResults}">-->
-<!--                    <div class="song-item">-->
-<!--                        <img th:src="@{${song.imagePath}}" alt="Song image">-->
-<!--                        <div class="song-info">-->
-<!--                            <a class="song-title" th:href="@{/home/songs/{id}(id=${song.songId})}">-->
-<!--                                <h4 th:text="${song.title}">Song Title</h4>-->
-<!--                            </a>-->
-<!--                            <p th:text="'Album • ' + ${song.album.title}">Album</p>-->
-<!--                        </div>-->
-<!--                        <div class="song-duration" th:text="${song.duration}">3:57</div>-->
-<!--                        <div class="add-to-playlist openModalBtn" th:data-song-id="${song.songId}">-->
-<!--                            <i class='bx bx-plus-circle'></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div th:each="song, songStat : ${searchResults}">-->
+                <!--                    <div class="song-item">-->
+                <!--                        <img th:src="@{${song.imagePath}}" alt="Song image">-->
+                <!--                        <div class="song-info">-->
+                <!--                            <a class="song-title" th:href="@{/home/songs/{id}(id=${song.songId})}">-->
+                <!--                                <h4 th:text="${song.title}">Song Title</h4>-->
+                <!--                            </a>-->
+                <!--                            <p th:text="'Album • ' + ${song.album.title}">Album</p>-->
+                <!--                        </div>-->
+                <!--                        <div class="song-duration" th:text="${song.duration}">3:57</div>-->
+                <!--                        <div class="add-to-playlist openModalBtn" th:data-song-id="${song.songId}">-->
+                <!--                            <i class='bx bx-plus-circle'></i>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <table class="table">
                     <thead>
                     <tr>
@@ -141,15 +141,15 @@
                         <th>Title</th>
                         <th></th>
                         <th>Duration</th>
-<!--                        <th>Release Date</th>-->
+                        <!--                        <th>Release Date</th>-->
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="song, iterStat : ${searchResults}">
                         <td th:text="${iterStat.count}" style="justify-content:center"></td>
                         <td>
-                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" class="btn btn-sm">
-                                <i class='bx bx-play'></i>
+                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(\'' + ${song.title} + '\');'"  class="btn btn-sm">
+                                <i class="fas fa-play"></i>
                             </button>
                         </td>
                         <td>
@@ -161,8 +161,8 @@
                                 <i class='bx bx-plus-circle'></i>
                             </div>
                         </td>
-<!--                        <td th:text="${song.duration}"></td>-->
-<!--                        <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>-->
+                        <!--                        <td th:text="${song.duration}"></td>-->
+                        <!--                        <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>-->
                     </tr>
                     </tbody>
                 </table>

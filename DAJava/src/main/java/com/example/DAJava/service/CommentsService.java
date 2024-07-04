@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -64,5 +66,8 @@ public class CommentsService {
         } else {
             throw new AccessDeniedException("You do not have permission to delete this comment");
         }
+    }
+    public List<Comments> getCommentsSince(Date startDate, Date endDate) {
+        return commentsRepository.findByDateBetween(startDate, endDate);
     }
 }

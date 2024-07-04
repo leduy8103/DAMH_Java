@@ -54,6 +54,27 @@ public class HomeController {
         model.addAttribute("artists", artists);
         return "/home/artistList";
     }
+
+    @GetMapping("/artists/{id}")
+    public String getArtistById(@PathVariable("id") Long id, Model model) {
+        Optional<Albums> albumOpt = albumsService.getAlbumById(id);
+        if (albumOpt.isPresent()) {
+            Albums album = albumOpt.get();
+            List<Songs> songs = songsService.findAllSongsByAlbumId(id);
+            model.addAttribute("album", album);
+            model.addAttribute("songs", songs);
+            return "home/artistDetail";
+        } else {
+            return "redirect:/home"; // Nếu không tìm thấy album, quay về trang chủ
+        }
+//        Artists artist = artistsService.getArtistById(id);
+//        List<Albums> albums = albumsService.getAllAlbums();
+////        List<Songs> songs = songsService.findAllSongsByArtistId(id); // Đây là phương thức bạn cần thêm trong SongsService
+//        model.addAttribute("artist", artist);
+//        model.addAttribute("songs", songs);
+//        return "home/artistDetail";
+    }
+
     @GetMapping("/albumList")
     public String albumList(Model model) {
         List<Albums> albums = albumsService.getAllAlbums();

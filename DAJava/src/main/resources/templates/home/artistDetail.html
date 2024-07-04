@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layoutUser}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${album.title}">Album Details</title>
+    <title th:text="${artist.artistName}">Artist Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -14,13 +13,12 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
-                <img th:src="@{${album.imagePath}}" alt="Album Image" class="img-fluid">
+                <img th:src="@{${artist.avatar}}" alt="Artist Avatar" class="img-fluid">
             </div>
             <div class="col-md-8">
-                <h1 th:text="${album.title}"></h1>
-                <p>Artist: <span th:text="${album.artist.artistName}"></span></p>
-                <p>Genre: <span th:text="${album.genre.name}"></span></p>
-                <p>Release Date: <span th:text="${#dates.format(album.releaseDate, 'yyyy-MM-dd')}"></span></p>
+                <h1 th:text="${artist.artistName}"></h1>
+                <p>Country: <span th:text="${artist.country}"></span></p>
+                <p>Bio: <span th:text="${artist.bio}"></span></p>
                 <h3>Songs</h3>
                 <table class="table">
                     <thead>
@@ -35,7 +33,7 @@
                     <tr th:each="song, iterStat : ${songs}">
                         <td th:text="${iterStat.count}" style="justify-content:center"></td>
                         <td>
-                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(\'' + ${song.title} + '\');'"  class="btn btn-sm">
+                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'"  class="btn btn-sm">
                                 <i class="fas fa-play"></i>
                             </button>
                         </td>
@@ -45,7 +43,6 @@
                                th:data-url="@{/home/songs/{id}(id=${song.songId})}" th:text="${song.title}">
                             </a>
                         </td>
-                        <!--                        <td th:text="${song.duration}"></td>-->
                         <td th:text="${#dates.format(song.releaseDate, 'yyyy-MM-dd')}"></td>
                     </tr>
                     </tbody>

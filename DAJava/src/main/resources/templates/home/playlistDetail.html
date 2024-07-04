@@ -36,7 +36,7 @@
 <!--                            <button class="btn btn-sm">-->
 <!--                                <i class="fas fa-play"></i>-->
 <!--                            </button>-->
-                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(this);'" class="btn btn-sm">
+                            <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(\'' + ${song.title} + '\');'" class="btn btn-sm">
                                 <i class="fas fa-play"></i>
                             </button>
                         </td>
