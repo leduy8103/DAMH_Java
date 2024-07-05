@@ -62,17 +62,19 @@ public class PlaylistsService {
         playlistsRepository.deleteById(id);
     }
 
-    public void addSongToPlaylist(Long playlistId, Long songId) {
-        Playlists playlist = playlistsRepository.findById(playlistId)
-                .orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
-        Songs song = songsRepository.findById(songId)
-                .orElseThrow(() -> new IllegalArgumentException("Song not found"));
+    public boolean isSongInPlaylist(Long playlistId, Long songId) {
+        return playlistDetailRepository.existsByPlaylists_PlaylistIdAndSong_SongId(playlistId, songId);
+    }
 
+    public boolean addSongToPlaylist(Long playlistId, Long songId) {
+        if (isSongInPlaylist(playlistId, songId)) {
+            return false; // Song already exists in the playlist
+        }
         PlaylistDetails playlistDetail = new PlaylistDetails();
-        playlistDetail.setPlaylists(playlist);
-        playlistDetail.setSong(song);
-
+        playlistDetail.setPlaylists(playlistsRepository.findById(playlistId).orElseThrow(() -> new IllegalArgumentException("Invalid playlist ID")));
+        playlistDetail.setSong(songsRepository.findById(songId).orElseThrow(() -> new IllegalArgumentException("Invalid song ID")));
         playlistDetailRepository.save(playlistDetail);
+        return true; // Song added successfully
     }
 
     public List<Songs> getSongsInPlaylist(Long playlistId) {

@@ -3,6 +3,7 @@ package com.example.DAJava.controller;
 import com.example.DAJava.model.*;
 import com.example.DAJava.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,25 +56,14 @@ public class HomeController {
         return "/home/artistList";
     }
 
-    @GetMapping("/artists/{id}")
-    public String getArtistById(@PathVariable("id") Long id, Model model) {
-        Optional<Albums> albumOpt = albumsService.getAlbumById(id);
-        if (albumOpt.isPresent()) {
-            Albums album = albumOpt.get();
-            List<Songs> songs = songsService.findAllSongsByAlbumId(id);
-            model.addAttribute("album", album);
-            model.addAttribute("songs", songs);
-            return "home/artistDetail";
-        } else {
-            return "redirect:/home"; // Nếu không tìm thấy album, quay về trang chủ
-        }
+//    @GetMapping("/artists/{id}")
+//    public String getArtistById(@PathVariable("id") Long id, Model model) {
 //        Artists artist = artistsService.getArtistById(id);
-//        List<Albums> albums = albumsService.getAllAlbums();
-////        List<Songs> songs = songsService.findAllSongsByArtistId(id); // Đây là phương thức bạn cần thêm trong SongsService
+//        List<Songs> songs = songsService.findAllSongsByArtistId(id); // Đây là phương thức bạn cần thêm trong SongsService
 //        model.addAttribute("artist", artist);
 //        model.addAttribute("songs", songs);
 //        return "home/artistDetail";
-    }
+//    }
 
     @GetMapping("/albumList")
     public String albumList(Model model) {
@@ -181,7 +171,10 @@ public class HomeController {
     @GetMapping("/playlist/addToPlaylist")
     @ResponseBody
     public ResponseEntity<String> addToPlaylist(@RequestParam Long playlistId, @RequestParam Long songId) {
-        playlistsService.addSongToPlaylist(playlistId, songId);
+        boolean added = playlistsService.addSongToPlaylist(playlistId, songId);
+        if (!added) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Song already exists in the playlist");
+        }
         return ResponseEntity.ok("success");
     }
 

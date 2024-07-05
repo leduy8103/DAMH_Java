@@ -72,6 +72,11 @@ public class SecurityConfig {
                         .failureHandler(customAuthenticationFailureHandler())
                         .permitAll()
                 )
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/google", true)
+                        .failureUrl("/login?error")
+                )
                 .rememberMe(rememberMe -> rememberMe
                         .key("hutech")
                         .rememberMeCookieName("hutech")

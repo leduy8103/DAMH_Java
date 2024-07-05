@@ -18,4 +18,5 @@ public class Artists {
     private String avatar;
     private String bio;
     private String country;
+    
 }

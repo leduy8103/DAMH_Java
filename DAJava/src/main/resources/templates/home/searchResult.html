@@ -102,7 +102,7 @@
     </style>
 </head>
 <body>
-<section layout:fragment="content">
+<section class="height-100" layout:fragment="content">
     <div class="container">
         <div class="content">
             <div class="top-result" th:if="${searchResults.size() > 0}">
@@ -112,7 +112,7 @@
                         <h3 th:text="${searchResults.get(0).title}">Top Song Title</h3>
                     </a>
                     <p th:text="'Album • ' + ${searchResults.get(0).album.title}">Album</p>
-                    <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${searchResults.get(0).filePath} + '\'); updateSongTitle(this);'" class="play-button">
+                    <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${searchResults.get(0).filePath} + '\'); updateSongTitle(\'' + ${searchResults.get(0).title} + '\');'" class="play-button">
                         <span>&#9658;</span>
                     </button>
                 </div>
@@ -149,7 +149,7 @@
                         <td th:text="${iterStat.count}" style="justify-content:center"></td>
                         <td>
                             <button href="javascript:void(0);" th:attr="onclick='cspd_change_music(\'' + ${song.filePath} + '\'); updateSongTitle(\'' + ${song.title} + '\');'"  class="btn btn-sm">
-                                <i class="fas fa-play"></i>
+                                <i class='bx bx-play'></i>
                             </button>
                         </td>
                         <td>

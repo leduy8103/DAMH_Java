@@ -59,7 +59,8 @@
         <h2 style="margin-top:64px; text-align:center">Artists</h2>
         <div class="grid">
             <div th:each="artist : ${artists}" class="item">
-                <a th:href="@{/home/artists/{id}(id=${artist.artistId})}">
+                <a>
+<!--                    th:href="@{/home/artists/{id}(id=${artist.artistId})}"-->
                     <button>
                         <img th:src="@{'/' +${artist.avatar}}" alt="Artist Avatar">
                         <div class="title" th:text="${artist.artistName}"></div>
